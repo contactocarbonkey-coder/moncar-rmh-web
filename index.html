@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MONCAR RMH — Repuestos para Herramientas</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f4f4;--white:#fff;--surface:#fff;--border:#e2e2e2;
+  --orange:#FF6B00;--orange2:#e05e00;
+  --text:#111;--muted:#666;
+  --green:#16a34a;--red:#dc2626;
+  --nav-h:64px;--sb-w:260px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--white);border-bottom:1px solid var(--border);height:var(--nav-h);display:flex;align-items:center;padding:0 28px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.nav-logo{font-size:20px;font-weight:900;letter-spacing:.5px;cursor:pointer;margin-right:28px}
+.nav-logo span{color:var(--orange)}
+.nav-links{display:flex;gap:2px}
+.nav-link{color:var(--muted);font-size:14px;font-weight:500;cursor:pointer;padding:6px 14px;border-radius:6px;border:none;background:none;transition:.15s}
+.nav-link:hover{color:var(--text);background:#f0f0f0}
+.nav-link.active{color:var(--orange);font-weight:700}
+.nav-right{display:flex;gap:10px;align-items:center;margin-left:auto}
+.btn-wa-nav{background:#25D366;color:#fff;border:none;padding:8px 16px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;gap:5px}
+.btn-cart-nav{background:var(--orange);color:#fff;border:none;padding:8px 16px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px}
+.btn-cart-nav:hover{background:var(--orange2)}
+#cart-count{background:#fff;color:var(--orange);border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900}
+
+/* PAGES */
+.page{display:none;padding-top:var(--nav-h)}
+.page.active{display:block}
+
+/* ===== INICIO ===== */
+.hero{background:linear-gradient(135deg,#111 0%,#1a0800 60%,#111 100%);padding:72px 28px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 55% 50%,rgba(255,107,0,.18) 0%,transparent 65%)}
+.hero-inner{position:relative;z-index:1;max-width:640px;margin:0 auto}
+.hero-badge{display:inline-block;background:rgba(255,107,0,.15);color:#FF6B00;border:1px solid rgba(255,107,0,.35);border-radius:20px;padding:5px 16px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:18px}
+.hero h1{font-size:clamp(30px,5vw,50px);font-weight:900;line-height:1.1;color:#fff;margin-bottom:14px}
+.hero h1 em{color:var(--orange);font-style:normal}
+.hero p{color:rgba(255,255,255,.65);font-size:16px;margin-bottom:28px;line-height:1.6}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-hero-p{background:var(--orange);color:#fff;border:none;padding:13px 28px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer}
+.btn-hero-p:hover{background:var(--orange2)}
+.btn-hero-s{color:#fff;border:1px solid rgba(255,255,255,.25);padding:13px 28px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;background:transparent}
+.btn-hero-s:hover{border-color:rgba(255,255,255,.5)}
+
+.sec{padding:52px 28px}
+.sec-alt{background:var(--white)}
+.sec-head{margin-bottom:28px}
+.sec-head h2{font-size:clamp(22px,3vw,28px);font-weight:900}
+.sec-head p{color:var(--muted);font-size:14px;margin-top:5px}
+
+/* MARCA CARDS */
+.marca-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px}
+.marca-card{border-radius:12px;padding:22px 16px;cursor:pointer;transition:transform .15s,box-shadow .15s;text-align:center}
+.marca-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.2)}
+.marca-name{font-size:16px;font-weight:800;letter-spacing:.3px}
+.marca-sub{font-size:12px;margin-top:4px}
+
+/* CAT CARDS */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:14px}
+.cat-card{border-radius:12px;padding:22px 16px;cursor:pointer;transition:transform .15s,box-shadow .15s;text-align:center}
+.cat-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.15)}
+.cat-icon{font-size:32px;margin-bottom:10px}
+.cat-name{color:#fff;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.cat-count{color:rgba(255,255,255,.75);font-size:12px;margin-top:3px}
+
+/* NOSOTROS */
+.nosotros-wrap{max-width:900px;margin:0 auto}
+.nos-hero{background:linear-gradient(135deg,#111,#1a0800);border-radius:16px;padding:48px 40px;margin-bottom:36px;text-align:center}
+.nos-hero h2{font-size:30px;font-weight:900;color:#fff;margin-bottom:12px}
+.nos-hero h2 span{color:var(--orange)}
+.nos-hero p{color:rgba(255,255,255,.65);font-size:16px;line-height:1.7;max-width:560px;margin:0 auto}
+.nos-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px}
+.n-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px}
+.n-icon{font-size:26px;margin-bottom:10px}
+.n-card h3{font-size:14px;font-weight:800;margin-bottom:6px}
+.n-card p{font-size:13px;color:var(--muted);line-height:1.6}
+.contact-box{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px}
+.contact-box h3{font-size:15px;font-weight:800;margin-bottom:16px}
+.c-row{display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--border)}
+.c-row:last-child{border-bottom:none}
+.c-ico{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.c-lbl{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.c-val{font-size:14px;font-weight:700}
+.c-val a{color:var(--text);text-decoration:none}
+.c-val a:hover{color:var(--orange)}
+
+/* ===== PRODUCTOS - layout con sidebar ===== */
+.prod-layout{display:flex;align-items:flex-start;min-height:calc(100vh - var(--nav-h))}
+
+/* SIDEBAR */
+.sidebar{width:var(--sb-w);flex-shrink:0;background:var(--white);border-right:1px solid var(--border);min-height:calc(100vh - var(--nav-h));position:sticky;top:var(--nav-h);max-height:calc(100vh - var(--nav-h));overflow-y:auto;padding:20px 16px}
+.sb-title{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:12px;margin-top:4px}
+.sb-section{margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:18px}
+.sb-section:last-child{border-bottom:none}
+.sb-check{display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer;padding:3px 0;color:var(--text)}
+.sb-check input{accent-color:var(--orange);width:14px;height:14px;cursor:pointer}
+.sb-check span:first-of-type{flex:1}
+.sb-cnt{color:var(--muted);font-size:11px}
+.sb-linea{display:flex;gap:6px;flex-wrap:wrap}
+.sb-linea-btn{border:1px solid var(--border);background:var(--white);color:var(--muted);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
+.sb-linea-btn:hover{background:var(--bg)}
+.sb-linea-btn.active{background:var(--orange);border-color:var(--orange);color:#fff}
+.sb-range{display:flex;gap:8px;align-items:center}
+.sb-range input{width:80px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:13px;color:var(--text)}
+.sb-range span{color:var(--muted);font-size:13px}
+.sb-select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:13px;color:var(--text);margin-bottom:6px}
+.sb-stock{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
+.sb-stock input{accent-color:var(--orange);width:15px;height:15px}
+.sb-clear{width:100%;background:none;border:1px solid var(--border);border-radius:7px;padding:8px;font-size:13px;color:var(--muted);cursor:pointer;margin-top:4px}
+.sb-clear:hover{border-color:var(--orange);color:var(--orange)}
+
+/* MAIN CONTENT */
+.prod-main{flex:1;min-width:0}
+.prod-topbar{padding:16px 20px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.search-wrap{position:relative;flex:1}
+.search-wrap input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 36px 9px 12px;color:var(--text);font-size:14px}
+.search-wrap input:focus{outline:none;border-color:var(--orange)}
+.search-wrap input::placeholder{color:var(--muted)}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;display:none}
+.active-filters{padding:8px 20px;background:var(--bg);display:none;gap:8px;flex-wrap:wrap}
+.active-tag{background:rgba(255,107,0,.1);border:1px solid rgba(255,107,0,.25);color:var(--orange);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px;cursor:pointer}
+.grid-wrap{padding:20px}
+.results-info{font-size:13px;color:var(--muted);margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:13px}
+.no-results{text-align:center;padding:60px 20px;color:var(--muted)}
+
+/* PRODUCT CARD */
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .15s,box-shadow .15s}
+.card:hover{border-color:var(--orange);box-shadow:0 4px 16px rgba(255,107,0,.1)}
+.card-icon{background:var(--bg);display:flex;align-items:center;justify-content:center;padding:18px;height:88px}
+.card-body{padding:11px;flex:1;display:flex;flex-direction:column;gap:4px}
+.card-badges{display:flex;gap:4px;flex-wrap:wrap}
+.badge{display:inline-block;font-size:10px;border-radius:4px;padding:2px 6px;font-weight:700}
+.bl{background:rgba(255,107,0,.1);color:var(--orange)}
+.bc{background:#f0f0f0;color:var(--muted)}
+.card-cod{font-size:11px;font-weight:700;color:var(--orange);letter-spacing:.5px;margin-top:2px}
+.card-desc{font-size:13px;line-height:1.35;flex:1}
+.card-sub{font-size:11px;color:var(--muted)}
+.card-precio{font-size:16px;font-weight:900;margin-top:4px}
+.card-stock{font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;align-self:flex-start}
+.sok{background:rgba(22,163,74,.1);color:var(--green)}
+.sno{background:rgba(220,38,38,.1);color:var(--red)}
+.btn-add{margin-top:7px;background:var(--orange);color:#fff;border:none;border-radius:6px;padding:8px;font-size:13px;font-weight:600;cursor:pointer;width:100%}
+.btn-add:hover{background:var(--orange2)}
+.btn-add:disabled{background:#e5e5e5;color:#aaa;cursor:not-allowed}
+
+/* CART */
+.cart-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200}
+.cart-panel{position:fixed;top:0;right:-420px;width:min(420px,100vw);height:100%;background:var(--white);border-left:1px solid var(--border);z-index:201;display:flex;flex-direction:column;transition:right .25s;box-shadow:-4px 0 20px rgba(0,0,0,.1)}
+.cart-panel.open{right:0}
+.cart-header{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.cart-header h2{font-size:16px;font-weight:800}
+.btn-xc{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1}
+.cart-items{flex:1;overflow-y:auto;padding:12px}
+.cart-empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.ci{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
+.ci-info{flex:1}
+.ci-cod{font-size:11px;color:var(--orange);font-weight:700}
+.ci-desc{font-size:13px;margin:2px 0}
+.ci-precio{font-size:14px;font-weight:700}
+.ci-qty{display:flex;align-items:center;gap:6px;margin-top:5px}
+.ci-qty button{background:#f0f0f0;border:none;width:24px;height:24px;border-radius:4px;cursor:pointer;font-size:15px}
+.ci-qty span{font-size:14px;font-weight:700;min-width:20px;text-align:center}
+.btn-rm{background:none;border:none;color:var(--red);cursor:pointer;font-size:17px;padding:0 4px;line-height:1}
+.cart-footer{padding:16px 20px;border-top:1px solid var(--border)}
+.cart-total{display:flex;justify-content:space-between;font-size:16px;font-weight:800;margin-bottom:14px}
+.btn-wa-c{background:#25D366;color:#fff;border:none;border-radius:8px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;width:100%;margin-bottom:8px}
+.btn-em-c{background:var(--white);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;width:100%}
+.btn-em-c:hover{border-color:var(--orange);color:var(--orange)}
+
+/* FOOTER */
+footer{background:var(--white);border-top:1px solid var(--border);padding:36px 28px 24px}
+.fi{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px;max-width:1000px;margin:0 auto}
+.fb{font-size:18px;font-weight:900;margin-bottom:6px}
+.fb span{color:var(--orange)}
+.fd{font-size:13px;color:var(--muted);line-height:1.5}
+.fc h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:10px}
+.fc a{display:block;font-size:13px;color:var(--text);text-decoration:none;margin-bottom:5px;cursor:pointer}
+.fc a:hover{color:var(--orange)}
+.ft{text-align:center;padding-top:18px;margin-top:20px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}
+
+/* MOBILE SIDEBAR TOGGLE */
+.sb-toggle{display:none;background:var(--orange);color:#fff;border:none;padding:8px 16px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:50}
+
+@media(max-width:860px){
+  .sidebar{position:fixed;top:var(--nav-h);left:-280px;z-index:51;transition:left .25s;max-height:100vh}
+  .sidebar.open{left:0}
+  .sidebar-overlay.open{display:block}
+  .sb-toggle{display:flex;align-items:center;gap:6px}
+  .prod-main{width:100%}
+}
+@media(max-width:640px){
+  .sec{padding:36px 16px}
+  .marca-grid,.cat-grid{grid-template-columns:repeat(2,1fr)}
+  .nos-hero{padding:32px 20px}
+  .grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .grid-wrap{padding:14px}
+}
+
+/* FORM PEDIDO MODAL */
+.fmodal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;align-items:center;justify-content:center;padding:20px}
+.fmodal-ov.open{display:flex}
+.fmodal{background:var(--white);border-radius:14px;padding:28px;width:min(480px,100%);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.fmodal-title{font-size:19px;font-weight:900;margin-bottom:5px}
+.fmodal-sub{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.5}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}
+.fg input{width:100%;border:1px solid var(--border);border-radius:7px;padding:10px 12px;font-size:14px;color:var(--text);background:var(--bg)}
+.fg input:focus{outline:none;border-color:var(--orange)}
+.fg input.ferr{border-color:var(--red)}
+.fg-note{font-size:12px;color:var(--muted);margin-top:3px}
+.fmodal-acts{display:flex;gap:10px;margin-top:22px}
+.btn-cfm{flex:1;background:var(--orange);color:#fff;border:none;border-radius:8px;padding:12px;font-size:15px;font-weight:700;cursor:pointer}
+.btn-cfm:hover{background:var(--orange2)}
+.btn-cnc{background:#f0f0f0;color:var(--muted);border:none;border-radius:8px;padding:12px 16px;font-size:14px;font-weight:600;cursor:pointer}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="irAInicio()">MONCAR<span> RMH</span></div>
+  <div class="nav-links">
+    <button class="nav-link active" id="nav-inicio" onclick="irAInicio()">Inicio</button>
+    <button class="nav-link" id="nav-productos" onclick="irAProductos()">Productos</button>
+    <button class="nav-link" id="nav-nosotros" onclick="irANosotros()">Nosotros</button>
+  </div>
+  <div class="nav-right">
+    <a class="btn-wa-nav" href="https://wa.me/5491136267009" target="_blank">&#128172; WhatsApp</a>
+    <button class="btn-cart-nav" onclick="abrirCart()">Carrito <span id="cart-count">0</span></button>
+  </div>
+</nav>
+
+<!-- ===== INICIO ===== -->
+<div id="page-inicio" class="page active">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">Repuestos originales</div>
+      <h1>Carbones y repuestos<br>para tus <em>herramientas</em></h1>
+      <p>Carbones electricos MONCAR e interruptores RMH.<br>Compatible con las principales marcas. Envios a todo el pais.</p>
+      <div class="hero-btns">
+        <button class="btn-hero-p" onclick="irAProductos()">Ver catalogo completo</button>
+        <a class="btn-hero-s" href="https://wa.me/5491136267009" target="_blank">Consultar por WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-head"><h2>Compra por marca</h2><p>Compatible con las principales marcas del mercado</p></div>
+    <div class="marca-grid"><div class="marca-card" style="background:#E31837;color:#ffffff" onclick="irAMarca('Black Y Decker')"><div class="marca-name">Black Y Decker</div><div class="marca-sub" style="color:#ffffff;opacity:.72">29 carbones</div></div>
+<div class="marca-card" style="background:#FFCD00;color:#000000" onclick="irAMarca('De Walt')"><div class="marca-name">De Walt</div><div class="marca-sub" style="color:#000000;opacity:.72">26 carbones</div></div>
+<div class="marca-card" style="background:#007BC0;color:#ffffff" onclick="irAMarca('Bosch')"><div class="marca-name">Bosch</div><div class="marca-sub" style="color:#ffffff;opacity:.72">21 carbones</div></div>
+<div class="marca-card" style="background:#003087;color:#ffffff" onclick="irAMarca('Skil')"><div class="marca-name">Skil</div><div class="marca-sub" style="color:#ffffff;opacity:.72">17 carbones</div></div>
+<div class="marca-card" style="background:#00A8E0;color:#ffffff" onclick="irAMarca('Makita')"><div class="marca-name">Makita</div><div class="marca-sub" style="color:#ffffff;opacity:.72">15 carbones</div></div>
+<div class="marca-card" style="background:#003082;color:#ffffff" onclick="irAMarca('Metabo')"><div class="marca-name">Metabo</div><div class="marca-sub" style="color:#ffffff;opacity:.72">12 carbones</div></div>
+<div class="marca-card" style="background:#FF6B00;color:#ffffff" onclick="irAMarca('Gamma')"><div class="marca-name">Gamma</div><div class="marca-sub" style="color:#ffffff;opacity:.72">12 carbones</div></div>
+<div class="marca-card" style="background:#E4002B;color:#ffffff" onclick="irAMarca('Hitachi')"><div class="marca-name">Hitachi</div><div class="marca-sub" style="color:#ffffff;opacity:.72">11 carbones</div></div>
+<div class="marca-card" style="background:#FFC72C;color:#000000" onclick="irAMarca('Stanley')"><div class="marca-name">Stanley</div><div class="marca-sub" style="color:#000000;opacity:.72">3 carbones</div></div>
+<div class="marca-card" style="background:#CC0000;color:#ffffff" onclick="irAMarca('Milwaukee')"><div class="marca-name">Milwaukee</div><div class="marca-sub" style="color:#ffffff;opacity:.72">3 carbones</div></div>
+<div class="marca-card" style="background:#E20000;color:#ffffff" onclick="irAMarca('Einhell')"><div class="marca-name">Einhell</div><div class="marca-sub" style="color:#ffffff;opacity:.72">2 carbones</div></div>
+<div class="marca-card" style="background:#1BA0E1;color:#ffffff" onclick="irAMarca('Dremel')"><div class="marca-name">Dremel</div><div class="marca-sub" style="color:#ffffff;opacity:.72">1 carbones</div></div></div>
+  </div>
+
+  <div class="sec sec-alt">
+    <div class="sec-head"><h2>Compra por categoria</h2><p>Encontra rapido el repuesto para tu herramienta</p></div>
+    <div class="cat-grid"><div class="cat-card" style="background:linear-gradient(135deg,#FF6B00,#cc3300)" onclick="irACat('Amoladoras')"><div class="cat-icon">⚙️</div><div class="cat-name">Amoladoras</div><div class="cat-count">114 productos</div></div>
+<div class="cat-card" style="background:linear-gradient(135deg,#374151,#1f2937)" onclick="irACat('Otros')"><div class="cat-icon">🛠️</div><div class="cat-name">Otros</div><div class="cat-count">101 productos</div></div>
+<div class="cat-card" style="background:linear-gradient(135deg,#2563EB,#1e40af)" onclick="irACat('Taladros')"><div class="cat-icon">🔩</div><div class="cat-name">Taladros</div><div class="cat-count">61 productos</div></div>
+<div class="cat-card" style="background:linear-gradient(135deg,#d97706,#b45309)" onclick="irACat('Electrodomesticos')"><div class="cat-icon">🔌</div><div class="cat-name">Electrodomesticos</div><div class="cat-count">39 productos</div></div>
+<div class="cat-card" style="background:linear-gradient(135deg,#16a34a,#15803d)" onclick="irACat('Sierras')"><div class="cat-icon">🪚</div><div class="cat-name">Sierras</div><div class="cat-count">25 productos</div></div>
+<div class="cat-card" style="background:linear-gradient(135deg,#0d9488,#0f766e)" onclick="irACat('Lijadoras')"><div class="cat-icon">🔧</div><div class="cat-name">Lijadoras</div><div class="cat-count">20 productos</div></div>
+<div class="cat-card" style="background:linear-gradient(135deg,#059669,#047857)" onclick="irACat('Maq. de Coser')"><div class="cat-icon">🧵</div><div class="cat-name">Maq. de Coser</div><div class="cat-count">5 productos</div></div>
+<div class="cat-card" style="background:linear-gradient(135deg,#dc2626,#b91c1c)" onclick="irACat('Aspiradoras')"><div class="cat-icon">🌀</div><div class="cat-name">Aspiradoras</div><div class="cat-count">4 productos</div></div>
+<div class="cat-card" style="background:linear-gradient(135deg,#0284c7,#0369a1)" onclick="irACat('Hidrolavadoras')"><div class="cat-icon">💧</div><div class="cat-name">Hidrolavadoras</div><div class="cat-count">4 productos</div></div>
+<div class="cat-card" style="background:linear-gradient(135deg,#7c3aed,#6d28d9)" onclick="irACat('Lavarropas')"><div class="cat-icon">🫧</div><div class="cat-name">Lavarropas</div><div class="cat-count">3 productos</div></div>
+<div class="cat-card" style="background:linear-gradient(135deg,#db2777,#be185d)" onclick="irACat('Equipos de Pintura')"><div class="cat-icon">🎨</div><div class="cat-name">Equipos de Pintura</div><div class="cat-count">2 productos</div></div></div>
+  </div>
+</div>
+
+<!-- ===== PRODUCTOS ===== -->
+<div id="page-productos" class="page">
+  <div class="prod-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <div class="sb-section">
+        <div class="sb-title">Linea</div>
+        <div class="sb-linea">
+          <button class="sb-linea-btn active" data-val="" onclick="setLinea(this)">Todos</button>
+          <button class="sb-linea-btn" data-val="MONCAR" onclick="setLinea(this)">MONCAR</button>
+          <button class="sb-linea-btn" data-val="RMH" onclick="setLinea(this)">RMH</button>
+        </div>
+      </div>
+
+      <div class="sb-section">
+        <div class="sb-title">Disponibilidad</div>
+        <label class="sb-stock">
+          <input type="checkbox" id="solo-stock" onchange="filtrar()">
+          <span>Solo en stock</span>
+        </label>
+      </div>
+
+      <div class="sb-section">
+        <div class="sb-title">Categoria</div>
+        <div id="sb-cats"><label class="sb-check"><input type="checkbox" value="Amoladoras" onchange="filtrar()"><span>Amoladoras</span><span class="sb-cnt">114</span></label>
+<label class="sb-check"><input type="checkbox" value="Otros" onchange="filtrar()"><span>Otros</span><span class="sb-cnt">101</span></label>
+<label class="sb-check"><input type="checkbox" value="Taladros" onchange="filtrar()"><span>Taladros</span><span class="sb-cnt">61</span></label>
+<label class="sb-check"><input type="checkbox" value="Electrodomesticos" onchange="filtrar()"><span>Electrodomesticos</span><span class="sb-cnt">39</span></label>
+<label class="sb-check"><input type="checkbox" value="Sierras" onchange="filtrar()"><span>Sierras</span><span class="sb-cnt">25</span></label>
+<label class="sb-check"><input type="checkbox" value="Lijadoras" onchange="filtrar()"><span>Lijadoras</span><span class="sb-cnt">20</span></label>
+<label class="sb-check"><input type="checkbox" value="Maq. de Coser" onchange="filtrar()"><span>Maq. de Coser</span><span class="sb-cnt">5</span></label>
+<label class="sb-check"><input type="checkbox" value="Aspiradoras" onchange="filtrar()"><span>Aspiradoras</span><span class="sb-cnt">4</span></label>
+<label class="sb-check"><input type="checkbox" value="Hidrolavadoras" onchange="filtrar()"><span>Hidrolavadoras</span><span class="sb-cnt">4</span></label>
+<label class="sb-check"><input type="checkbox" value="Lavarropas" onchange="filtrar()"><span>Lavarropas</span><span class="sb-cnt">3</span></label>
+<label class="sb-check"><input type="checkbox" value="Equipos de Pintura" onchange="filtrar()"><span>Equipos de Pintura</span><span class="sb-cnt">2</span></label></div>
+      </div>
+
+      <div class="sb-section">
+        <div class="sb-title">Marca</div>
+        <div id="sb-marcas"><label class="sb-check"><input type="checkbox" value="Black Y Decker" onchange="filtrar()"><span>Black Y Decker</span><span class="sb-cnt">29</span></label>
+<label class="sb-check"><input type="checkbox" value="De Walt" onchange="filtrar()"><span>De Walt</span><span class="sb-cnt">26</span></label>
+<label class="sb-check"><input type="checkbox" value="Bosch" onchange="filtrar()"><span>Bosch</span><span class="sb-cnt">21</span></label>
+<label class="sb-check"><input type="checkbox" value="Skil" onchange="filtrar()"><span>Skil</span><span class="sb-cnt">17</span></label>
+<label class="sb-check"><input type="checkbox" value="Makita" onchange="filtrar()"><span>Makita</span><span class="sb-cnt">15</span></label>
+<label class="sb-check"><input type="checkbox" value="Metabo" onchange="filtrar()"><span>Metabo</span><span class="sb-cnt">12</span></label>
+<label class="sb-check"><input type="checkbox" value="Gamma" onchange="filtrar()"><span>Gamma</span><span class="sb-cnt">12</span></label>
+<label class="sb-check"><input type="checkbox" value="Hitachi" onchange="filtrar()"><span>Hitachi</span><span class="sb-cnt">11</span></label>
+<label class="sb-check"><input type="checkbox" value="Enceradora" onchange="filtrar()"><span>Enceradora</span><span class="sb-cnt">4</span></label>
+<label class="sb-check"><input type="checkbox" value="Drill - Met" onchange="filtrar()"><span>Drill - Met</span><span class="sb-cnt">3</span></label>
+<label class="sb-check"><input type="checkbox" value="Cobra" onchange="filtrar()"><span>Cobra</span><span class="sb-cnt">3</span></label>
+<label class="sb-check"><input type="checkbox" value="Stanley" onchange="filtrar()"><span>Stanley</span><span class="sb-cnt">3</span></label>
+<label class="sb-check"><input type="checkbox" value="Milwaukee" onchange="filtrar()"><span>Milwaukee</span><span class="sb-cnt">3</span></label>
+<label class="sb-check"><input type="checkbox" value="Afeitadora" onchange="filtrar()"><span>Afeitadora</span><span class="sb-cnt">2</span></label>
+<label class="sb-check"><input type="checkbox" value="Vaporizador" onchange="filtrar()"><span>Vaporizador</span><span class="sb-cnt">2</span></label>
+<label class="sb-check"><input type="checkbox" value="Einhell" onchange="filtrar()"><span>Einhell</span><span class="sb-cnt">2</span></label>
+<label class="sb-check"><input type="checkbox" value="Picadora" onchange="filtrar()"><span>Picadora</span><span class="sb-cnt">1</span></label>
+<label class="sb-check"><input type="checkbox" value="Cuchillo" onchange="filtrar()"><span>Cuchillo</span><span class="sb-cnt">1</span></label>
+<label class="sb-check"><input type="checkbox" value="Secador" onchange="filtrar()"><span>Secador</span><span class="sb-cnt">1</span></label>
+<label class="sb-check"><input type="checkbox" value="Licuadora" onchange="filtrar()"><span>Licuadora</span><span class="sb-cnt">1</span></label>
+<label class="sb-check"><input type="checkbox" value="Dremel" onchange="filtrar()"><span>Dremel</span><span class="sb-cnt">1</span></label>
+<label class="sb-check"><input type="checkbox" value="Aeg" onchange="filtrar()"><span>Aeg</span><span class="sb-cnt">1</span></label></div>
+      </div>
+
+      <div class="sb-section">
+        <div class="sb-title">Precio</div>
+        <div class="sb-range">
+          <input type="number" id="precio-min" placeholder="Min" value="" oninput="filtrar()">
+          <span>—</span>
+          <input type="number" id="precio-max" placeholder="Max" value="" oninput="filtrar()">
+        </div>
+      </div>
+
+      <div class="sb-section">
+        <div class="sb-title">Dimensiones (mm)</div>
+        <select class="sb-select" id="fil-esp" onchange="filtrar()">
+          <option value="">Espesor: todos</option>
+          <option value="2.6">2.6</option>
+<option value="3.0">3.0</option>
+<option value="3.5">3.5</option>
+<option value="3.75">3.75</option>
+<option value="3.9">3.9</option>
+<option value="4.0">4.0</option>
+<option value="4.5">4.5</option>
+<option value="4.7">4.7</option>
+<option value="4.75">4.75</option>
+<option value="4.8">4.8</option>
+<option value="4.85">4.85</option>
+<option value="4.9">4.9</option>
+<option value="5.0">5.0</option>
+<option value="5.2">5.2</option>
+<option value="5.3">5.3</option>
+<option value="5.5">5.5</option>
+<option value="5.6">5.6</option>
+<option value="5.75">5.75</option>
+<option value="5.9">5.9</option>
+<option value="6.0">6.0</option>
+<option value="6.15">6.15</option>
+<option value="6.2">6.2</option>
+<option value="6.25">6.25</option>
+<option value="6.3">6.3</option>
+<option value="6.35">6.35</option>
+<option value="6.4">6.4</option>
+<option value="6.5">6.5</option>
+<option value="6.8">6.8</option>
+<option value="6.9">6.9</option>
+<option value="7.0">7.0</option>
+<option value="7.3">7.3</option>
+<option value="7.5">7.5</option>
+<option value="7.9">7.9</option>
+<option value="8.0">8.0</option>
+<option value="8.8">8.8</option>
+<option value="9.0">9.0</option>
+        </select>
+        <select class="sb-select" id="fil-anch" onchange="filtrar()">
+          <option value="">Ancho: todos</option>
+          <option value="3.0">3.0</option>
+<option value="4.0">4.0</option>
+<option value="4.5">4.5</option>
+<option value="4.75">4.75</option>
+<option value="5.0">5.0</option>
+<option value="5.3">5.3</option>
+<option value="5.5">5.5</option>
+<option value="5.6">5.6</option>
+<option value="5.9">5.9</option>
+<option value="6.0">6.0</option>
+<option value="6.2">6.2</option>
+<option value="6.3">6.3</option>
+<option value="6.5">6.5</option>
+<option value="7.0">7.0</option>
+<option value="7.2">7.2</option>
+<option value="7.45">7.45</option>
+<option value="7.5">7.5</option>
+<option value="7.8">7.8</option>
+<option value="7.85">7.85</option>
+<option value="7.9">7.9</option>
+<option value="8.0">8.0</option>
+<option value="8.15">8.15</option>
+<option value="8.25">8.25</option>
+<option value="8.5">8.5</option>
+<option value="8.9">8.9</option>
+<option value="9.0">9.0</option>
+<option value="9.3">9.3</option>
+<option value="9.4">9.4</option>
+<option value="9.5">9.5</option>
+<option value="9.9">9.9</option>
+<option value="10.0">10.0</option>
+<option value="10.35">10.35</option>
+<option value="10.5">10.5</option>
+<option value="10.8">10.8</option>
+<option value="10.85">10.85</option>
+<option value="10.9">10.9</option>
+<option value="11.0">11.0</option>
+<option value="11.3">11.3</option>
+<option value="11.5">11.5</option>
+<option value="12.0">12.0</option>
+<option value="12.3">12.3</option>
+<option value="12.45">12.45</option>
+<option value="12.5">12.5</option>
+<option value="13.0">13.0</option>
+<option value="13.3">13.3</option>
+<option value="13.4">13.4</option>
+<option value="13.5">13.5</option>
+<option value="13.8">13.8</option>
+<option value="13.9">13.9</option>
+<option value="14.0">14.0</option>
+<option value="14.4">14.4</option>
+<option value="14.5">14.5</option>
+<option value="15.0">15.0</option>
+<option value="15.5">15.5</option>
+<option value="15.8">15.8</option>
+<option value="15.9">15.9</option>
+<option value="15.95">15.95</option>
+<option value="16.0">16.0</option>
+<option value="17.0">17.0</option>
+<option value="18.0">18.0</option>
+<option value="18.3">18.3</option>
+<option value="19.0">19.0</option>
+<option value="20.0">20.0</option>
+        </select>
+        <select class="sb-select" id="fil-larg" onchange="filtrar()">
+          <option value="">Largo: todos</option>
+          <option value="9.0">9.0</option>
+<option value="10.0">10.0</option>
+<option value="11.0">11.0</option>
+<option value="11.3">11.3</option>
+<option value="11.5">11.5</option>
+<option value="11.6">11.6</option>
+<option value="12.0">12.0</option>
+<option value="12.5">12.5</option>
+<option value="12.7">12.7</option>
+<option value="12.8">12.8</option>
+<option value="13.0">13.0</option>
+<option value="13.8">13.8</option>
+<option value="14.0">14.0</option>
+<option value="14.2">14.2</option>
+<option value="14.4">14.4</option>
+<option value="14.5">14.5</option>
+<option value="15.0">15.0</option>
+<option value="15.5">15.5</option>
+<option value="16.0">16.0</option>
+<option value="16.3">16.3</option>
+<option value="17.0">17.0</option>
+<option value="17.5">17.5</option>
+<option value="18.0">18.0</option>
+<option value="18.3">18.3</option>
+<option value="19.0">19.0</option>
+<option value="19.6">19.6</option>
+<option value="20.0">20.0</option>
+<option value="21.0">21.0</option>
+<option value="22.0">22.0</option>
+<option value="23.0">23.0</option>
+<option value="24.0">24.0</option>
+<option value="25.0">25.0</option>
+<option value="26.0">26.0</option>
+<option value="27.0">27.0</option>
+<option value="28.0">28.0</option>
+<option value="30.0">30.0</option>
+<option value="35.0">35.0</option>
+<option value="40.0">40.0</option>
+<option value="125.0">125.0</option>
+        </select>
+      </div>
+
+      <div class="sb-section">
+        <div class="sb-title">Terminal</div>
+        <select class="sb-select" id="fil-term" onchange="filtrar()">
+          <option value="">Todos los terminales</option>
+          <option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="5">5</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="18">18</option>
+<option value="20">20</option>
+<option value="21">21</option>
+        </select>
+      </div>
+
+      <button class="sb-clear" onclick="limpiarFiltros()">Limpiar filtros</button>
+    </div><!-- /sidebar -->
+
+    <div class="sidebar-overlay" id="sb-overlay" onclick="cerrarSidebar()"></div>
+
+    <!-- MAIN -->
+    <div class="prod-main">
+      <div class="prod-topbar">
+        <button class="sb-toggle" onclick="abrirSidebar()">&#9776; Filtros</button>
+        <div class="search-wrap">
+          <input type="text" id="search" placeholder="Buscar codigo, descripcion, marca..." oninput="filtrar()">
+          <button class="search-clear" id="clear-btn" onclick="limpiarBusqueda()">&#x2715;</button>
+        </div>
+      </div>
+      <div class="active-filters" id="active-filters"></div>
+      <div class="grid-wrap">
+        <div class="results-info" id="results-info"></div>
+        <div class="grid" id="grid"></div>
+        <div class="no-results" id="no-results" style="display:none">
+          <p style="font-size:18px;margin-bottom:8px">Sin resultados</p>
+          <span>Proba ajustando los filtros</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== NOSOTROS ===== -->
+<div id="page-nosotros" class="page">
+  <div class="sec">
+    <div class="nosotros-wrap">
+      <div class="nos-hero">
+        <h2>Sobre <span>MONCAR RMH</span></h2>
+        <p>Empresa familiar especializada en repuestos electricos para herramientas. Carbones electricos MONCAR e interruptores RMH compatibles con las principales marcas del mercado.</p>
+      </div>
+      <div class="nos-cards">
+        <div class="n-card"><div class="n-icon">⚡</div><h3>Experiencia en el rubro</h3><p>Anos de trayectoria en la venta de repuestos electricos para herramientas profesionales y de uso domestico.</p></div>
+        <div class="n-card"><div class="n-icon">🏷️</div><h3>Multimarca</h3><p>Compatible con Bosch, DeWalt, Makita, Black & Decker, Metabo, Hitachi, Stanley, Gamma, Milwaukee y muchas mas.</p></div>
+        <div class="n-card"><div class="n-icon">📦</div><h3>Envios a todo el pais</h3><p>Despachamos a cualquier punto del pais. Consulta por tu zona y los tiempos de entrega.</p></div>
+        <div class="n-card"><div class="n-icon">💬</div><h3>Atencion personalizada</h3><p>Te ayudamos a encontrar el repuesto exacto para tu herramienta. Consulta sin compromiso por WhatsApp.</p></div>
+      </div>
+      <div class="contact-box">
+        <h3>Contacto</h3>
+        <div class="c-row">
+          <div class="c-ico" style="background:#dcfce7">&#128172;</div>
+          <div><div class="c-lbl">WhatsApp</div><div class="c-val"><a href="https://wa.me/5491136267009" target="_blank">+54 9 11 3626-7009</a></div></div>
+        </div>
+        <div class="c-row">
+          <div class="c-ico" style="background:#fff7ed">&#128140;</div>
+          <div><div class="c-lbl">Email</div><div class="c-val"><a href="mailto:contacto.carbonkey@gmail.com">contacto.carbonkey@gmail.com</a></div></div>
+        </div>
+        <div class="c-row">
+          <div class="c-ico" style="background:#eff6ff">&#128200;</div>
+          <div><div class="c-lbl">Catalogo</div><div class="c-val"><a onclick="irAProductos()" style="cursor:pointer;color:var(--orange)">378 productos disponibles</a></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="fi">
+    <div><div class="fb">MONCAR<span> RMH</span></div><div class="fd">Carbones electricos e interruptores para herramientas. Envios a todo el pais.</div></div>
+    <div class="fc"><h4>Navegacion</h4><a onclick="irAInicio()">Inicio</a><a onclick="irAProductos()">Productos</a><a onclick="irANosotros()">Nosotros</a></div>
+    <div class="fc"><h4>Contacto</h4><a href="https://wa.me/5491136267009" target="_blank">WhatsApp: +54 9 11 3626-7009</a><a href="mailto:contacto.carbonkey@gmail.com">contacto.carbonkey@gmail.com</a></div>
+  </div>
+  <div class="ft">© 2026 MONCAR RMH — Todos los derechos reservados</div>
+</footer>
+
+<!-- FORM PEDIDO -->
+<div class="fmodal-ov" id="fmodal-ov">
+  <div class="fmodal">
+    <div class="fmodal-title">Datos para tu pedido</div>
+    <div class="fmodal-sub">Necesitamos estos datos para coordinar la entrega.</div>
+    <div class="fg">
+      <label>Nombre *</label>
+      <input type="text" id="f-nombre" placeholder="Tu nombre completo">
+    </div>
+    <div class="fg">
+      <label>Nombre del negocio</label>
+      <input type="text" id="f-negocio" placeholder="Ferreteria, taller, bulonera, local... (opcional)">
+      <div class="fg-note">Opcional si sos particular</div>
+    </div>
+    <div class="fg">
+      <label>Localidad / Ciudad *</label>
+      <input type="text" id="f-localidad" placeholder="Ej: Mendoza, Mar del Plata...">
+    </div>
+    <div class="fmodal-acts">
+      <button class="btn-cnc" onclick="cerrarFormModal()">Cancelar</button>
+      <button class="btn-cfm" onclick="confirmarPedido()">Enviar pedido &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<!-- CART -->
+<div class="cart-overlay" id="overlay" onclick="cerrarCart()"></div>
+<div class="cart-panel" id="cart-panel">
+  <div class="cart-header"><h2>Tu pedido</h2><button class="btn-xc" onclick="cerrarCart()">&#x2715;</button></div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-footer">
+    <div class="cart-total"><span>Total estimado</span><span id="cart-total">$0</span></div>
+    <button class="btn-wa-c" onclick="pedirPorWA()">&#128172; Pedir por WhatsApp</button>
+    <button class="btn-em-c" onclick="pedirPorEmail()">Pedir por Email</button>
+  </div>
+</div>
+
+<script>
+const PRODUCTOS = [{"cod": "CC 101", "linea": "MONCAR", "marca": "Cobreados", "cat": "Otros", "desc": "ATORNILLADOR BOSCH GSR 180", "dims": "4.5x8x13", "esp": 4.5, "anch": 8.0, "larg": 13.0, "terminal": null, "precio": 12190, "stock": false}, {"cod": "CC 102", "linea": "MONCAR", "marca": "Cobreados", "cat": "Otros", "desc": "ATORNILLADOR MAKITA CB 440", "dims": "3x10x13", "esp": 3.0, "anch": 10.0, "larg": 13.0, "terminal": null, "precio": 9600, "stock": false}, {"cod": "CE 001", "linea": "MONCAR", "marca": "Aspiradora", "cat": "Aspiradoras", "desc": "TURBION", "dims": "7x11x30", "esp": 7.0, "anch": 11.0, "larg": 30.0, "terminal": null, "precio": 6170, "stock": true}, {"cod": "CE 002", "linea": "MONCAR", "marca": "Aspiradora", "cat": "Electrodomesticos", "desc": "INDUSTRIAL ULTRACOMB", "dims": "6x9x35", "esp": 6.0, "anch": 9.0, "larg": 35.0, "terminal": null, "precio": 4640, "stock": true}, {"cod": "CE 003", "linea": "MONCAR", "marca": "Aspiradora", "cat": "Aspiradoras", "desc": "INDUSTRIAL DISPROMAC - TURBION", "dims": "7.5x12x28", "esp": 7.5, "anch": 12.0, "larg": 28.0, "terminal": null, "precio": 5170, "stock": false}, {"cod": "CE 004", "linea": "MONCAR", "marca": "Aspiradora", "cat": "Electrodomesticos", "desc": "INDUSTRIALES VARIAS", "dims": "8x12x30", "esp": 8.0, "anch": 12.0, "larg": 30.0, "terminal": null, "precio": 5460, "stock": true}, {"cod": "CE 005", "linea": "MONCAR", "marca": "Aspiradora", "cat": "Electrodomesticos", "desc": "YELMO JET", "dims": "5x12.5x25", "esp": 5.0, "anch": 12.5, "larg": 25.0, "terminal": null, "precio": 5130, "stock": true}, {"cod": "CE 006", "linea": "MONCAR", "marca": "Aspiradora", "cat": "Electrodomesticos", "desc": "INDUSTRIAL DIXTEL", "dims": "6x11x30", "esp": 6.0, "anch": 11.0, "larg": 30.0, "terminal": null, "precio": 5590, "stock": true}, {"cod": "CE 007", "linea": "MONCAR", "marca": "Aspiradora", "cat": "Electrodomesticos", "desc": "INDUSTRIAL ALOÑA", "dims": "6.5x11.5x30", "esp": 6.5, "anch": 11.5, "larg": 30.0, "terminal": null, "precio": 5530, "stock": false}, {"cod": "CE 008", "linea": "MONCAR", "marca": "Agro", "cat": "Maq. de Coser", "desc": "MAQUINA PARA COSER BOLSAS DE COSECHADORA", "dims": "6.00x7.80x10.00", "esp": 6.0, "anch": 7.8, "larg": 10.0, "terminal": null, "precio": 3880, "stock": false}, {"cod": "CE 021", "linea": "MONCAR", "marca": "Enceradora", "cat": "Electrodomesticos", "desc": "YELMO-EXTRACHATAS-ULTRACOMB-VARIAS", "dims": "6x9x30", "esp": 6.0, "anch": 9.0, "larg": 30.0, "terminal": null, "precio": 5270, "stock": true}, {"cod": "CE 022", "linea": "MONCAR", "marca": "Enceradora", "cat": "Electrodomesticos", "desc": "YELMO-ULTRACOMB-ELECTROLUX", "dims": "6x9x30", "esp": 6.0, "anch": 9.0, "larg": 30.0, "terminal": null, "precio": 5270, "stock": true}, {"cod": "CE 023", "linea": "MONCAR", "marca": "Enceradora", "cat": "Electrodomesticos", "desc": "YELMO INTERNACIONAL", "dims": "6x9x30", "esp": 6.0, "anch": 9.0, "larg": 30.0, "terminal": null, "precio": 5270, "stock": true}, {"cod": "CE 024", "linea": "MONCAR", "marca": "Enceradora", "cat": "Electrodomesticos", "desc": "VARIAS", "dims": "6x9x25", "esp": 6.0, "anch": 9.0, "larg": 25.0, "terminal": null, "precio": 5270, "stock": false}, {"cod": "CE 044", "linea": "MONCAR", "marca": "Bordeadora", "cat": "Electrodomesticos", "desc": "BORDEADORA DE CESPED", "dims": "6x6x20", "esp": 6.0, "anch": 6.0, "larg": 20.0, "terminal": null, "precio": 2530, "stock": true}, {"cod": "CE 045", "linea": "MONCAR", "marca": "Bordeadora", "cat": "Electrodomesticos", "desc": "BORDEADORA DE CESPED", "dims": "6x8x20", "esp": 6.0, "anch": 8.0, "larg": 20.0, "terminal": null, "precio": 2780, "stock": false}, {"cod": "CE 046", "linea": "MONCAR", "marca": "Bordeadora", "cat": "Electrodomesticos", "desc": "BORDEADORA DE CESPED", "dims": "6.3x6.3x16", "esp": 6.3, "anch": 6.3, "larg": 16.0, "terminal": null, "precio": 3110, "stock": true}, {"cod": "CE 061", "linea": "MONCAR", "marca": "Batidora", "cat": "Electrodomesticos", "desc": "YELMO", "dims": "6x6x25", "esp": 6.0, "anch": 6.0, "larg": 25.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 062", "linea": "MONCAR", "marca": "Batidora", "cat": "Electrodomesticos", "desc": "KENWOOD", "dims": "3.9x5.3x18", "esp": 3.9, "anch": 5.3, "larg": 18.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 063", "linea": "MONCAR", "marca": "Batidora", "cat": "Electrodomesticos", "desc": "VARIETT-ULTRACOMB", "dims": "5x5x15", "esp": 5.0, "anch": 5.0, "larg": 15.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 064", "linea": "MONCAR", "marca": "Batidora", "cat": "Electrodomesticos", "desc": "MANUAL YELMO", "dims": "4.75x4.75x15", "esp": 4.75, "anch": 4.75, "larg": 15.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 065", "linea": "MONCAR", "marca": "Batidora", "cat": "Electrodomesticos", "desc": "PHILIPS", "dims": "6.5x6.5x14", "esp": 6.5, "anch": 6.5, "larg": 14.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 066", "linea": "MONCAR", "marca": "Batidora", "cat": "Electrodomesticos", "desc": "C/ CUCHILLO BRAUN", "dims": "5x6x14", "esp": 5.0, "anch": 6.0, "larg": 14.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 067", "linea": "MONCAR", "marca": "Batidora", "cat": "Electrodomesticos", "desc": "MANUAL WEMIR", "dims": "4.5x6x14", "esp": 4.5, "anch": 6.0, "larg": 14.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 068", "linea": "MONCAR", "marca": "Batidora", "cat": "Electrodomesticos", "desc": "WEMIR", "dims": "3.5x4x12", "esp": 3.5, "anch": 4.0, "larg": 12.0, "terminal": null, "precio": 3540, "stock": false}, {"cod": "CE 069", "linea": "MONCAR", "marca": "Batidora", "cat": "Electrodomesticos", "desc": "MANUAL ULTRACOMB", "dims": "5x5x11", "esp": 5.0, "anch": 5.0, "larg": 11.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 081", "linea": "MONCAR", "marca": "Barre Alfombras", "cat": "Aspiradoras", "desc": "BARRE ALFOMBRA R.S", "dims": "5x6x18", "esp": 5.0, "anch": 6.0, "larg": 18.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 082", "linea": "MONCAR", "marca": "Barre Alfombras", "cat": "Electrodomesticos", "desc": "YELMO", "dims": "5x6x18", "esp": 5.0, "anch": 6.0, "larg": 18.0, "terminal": null, "precio": 2660, "stock": false}, {"cod": "CE 101", "linea": "MONCAR", "marca": "Picadora", "cat": "Electrodomesticos", "desc": "MOULINEX (CON RANURA)", "dims": "6.5x9x16", "esp": 6.5, "anch": 9.0, "larg": 16.0, "terminal": null, "precio": 2660, "stock": false}, {"cod": "CE 121", "linea": "MONCAR", "marca": "Cuchillo", "cat": "Electrodomesticos", "desc": "ELECTRICO ULTRACOMB", "dims": "4x4x9", "esp": 4.0, "anch": 4.0, "larg": 9.0, "terminal": null, "precio": 2660, "stock": false}, {"cod": "CE 141", "linea": "MONCAR", "marca": "Afeitadora", "cat": "Electrodomesticos", "desc": "PHILIPS", "dims": "2.6x4x9", "esp": 2.6, "anch": 4.0, "larg": 9.0, "terminal": null, "precio": 2660, "stock": false}, {"cod": "CE 142", "linea": "MONCAR", "marca": "Afeitadora", "cat": "Electrodomesticos", "desc": "SUMBEAN", "dims": "3x3x9", "esp": 3.0, "anch": 3.0, "larg": 9.0, "terminal": null, "precio": 2660, "stock": false}, {"cod": "CE 161", "linea": "MONCAR", "marca": "Vaporizador", "cat": "Electrodomesticos", "desc": "AURORA", "dims": "6.3x20x125", "esp": 6.3, "anch": 20.0, "larg": 125.0, "terminal": null, "precio": 6910, "stock": false}, {"cod": "CE 162", "linea": "MONCAR", "marca": "Vaporizador", "cat": "Electrodomesticos", "desc": "AURORA", "dims": "DIAMx6x125", "esp": null, "anch": 6.0, "larg": 125.0, "terminal": null, "precio": 6910, "stock": false}, {"cod": "CE 181", "linea": "MONCAR", "marca": "Lazo Asincron", "cat": "Sierras", "desc": "LAZO COMUN (SIERRA CARNICERO)", "dims": "6x18x30", "esp": 6.0, "anch": 18.0, "larg": 30.0, "terminal": null, "precio": 10290, "stock": false}, {"cod": "CE 182", "linea": "MONCAR", "marca": "Lazo Asincron", "cat": "Sierras", "desc": "LAZO ASINCRON HACHITA", "dims": "3 a 6x18x25", "esp": null, "anch": 18.0, "larg": 25.0, "terminal": null, "precio": 10290, "stock": false}, {"cod": "CE 183", "linea": "MONCAR", "marca": "Lazo Asincron", "cat": "Sierras", "desc": "LAZO ASINCRON LECHUZA", "dims": "4 a 8x18x30", "esp": null, "anch": 18.0, "larg": 30.0, "terminal": null, "precio": 10290, "stock": false}, {"cod": "CE 201", "linea": "MONCAR", "marca": "Secador", "cat": "Electrodomesticos", "desc": "JUMBO", "dims": "4x4.5x16", "esp": 4.0, "anch": 4.5, "larg": 16.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 221", "linea": "MONCAR", "marca": "Maquina De Coser", "cat": "Maq. de Coser", "desc": "SINGER FAMILIAR", "dims": "4x4x17", "esp": 4.0, "anch": 4.0, "larg": 17.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 222", "linea": "MONCAR", "marca": "Maquina De Coser", "cat": "Electrodomesticos", "desc": "CON MOTOR MOTORMECH", "dims": "5.2x6.2x16", "esp": 5.2, "anch": 6.2, "larg": 16.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 223", "linea": "MONCAR", "marca": "Maquina De Coser", "cat": "Maq. de Coser", "desc": "NECCHI", "dims": "4x5x15", "esp": 4.0, "anch": 5.0, "larg": 15.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 224", "linea": "MONCAR", "marca": "Maquina De Coser", "cat": "Electrodomesticos", "desc": "CON MOTOR M.A.G. (NUEVA)", "dims": "3.75x4.75x15", "esp": 3.75, "anch": 4.75, "larg": 15.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 225", "linea": "MONCAR", "marca": "Maquina De Coser", "cat": "Electrodomesticos", "desc": "VARIOS", "dims": "6xDIAMx22", "esp": 6.0, "anch": null, "larg": 22.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 226", "linea": "MONCAR", "marca": "Maquina De Coser", "cat": "Electrodomesticos", "desc": "VARIOS", "dims": "6xDIAMx22", "esp": 6.0, "anch": null, "larg": 22.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 227", "linea": "MONCAR", "marca": "Maquina De Coser", "cat": "Maq. de Coser", "desc": "MAQUINA DE COSER - M.A.G.", "dims": "5.3xDIAMx18", "esp": 5.3, "anch": null, "larg": 18.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 228", "linea": "MONCAR", "marca": "Maquina De Coser", "cat": "Maq. de Coser", "desc": "INDUSTRIAL SINGER", "dims": "5x8x28", "esp": 5.0, "anch": 8.0, "larg": 28.0, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CE 261", "linea": "MONCAR", "marca": "Ventilador", "cat": "Electrodomesticos", "desc": "VARIOS", "dims": "8xDIAMx25", "esp": 8.0, "anch": null, "larg": 25.0, "terminal": null, "precio": 2780, "stock": false}, {"cod": "CE 262", "linea": "MONCAR", "marca": "Ventilador", "cat": "Electrodomesticos", "desc": "VARIOS", "dims": "8xDIAMx25", "esp": 8.0, "anch": null, "larg": 25.0, "terminal": null, "precio": 2780, "stock": false}, {"cod": "CE 263", "linea": "MONCAR", "marca": "Ventilador", "cat": "Electrodomesticos", "desc": "VARIOS", "dims": "7xDIAMx25", "esp": 7.0, "anch": null, "larg": 25.0, "terminal": null, "precio": 2780, "stock": false}, {"cod": "CE 264", "linea": "MONCAR", "marca": "Ventilador", "cat": "Electrodomesticos", "desc": "VARIOS", "dims": "7xDIAMx25", "esp": 7.0, "anch": null, "larg": 25.0, "terminal": null, "precio": 2780, "stock": false}, {"cod": "CE 281", "linea": "MONCAR", "marca": "Lustra Aspiradora", "cat": "Electrodomesticos", "desc": "PHILIPS", "dims": "6.5x6.5x30", "esp": 6.5, "anch": 6.5, "larg": 30.0, "terminal": null, "precio": 2780, "stock": false}, {"cod": "CE 301", "linea": "MONCAR", "marca": "Licuadora", "cat": "Electrodomesticos", "desc": "KENWOOD CHEFF", "dims": "6x6x20", "esp": 6.0, "anch": 6.0, "larg": 20.0, "terminal": null, "precio": 2780, "stock": false}, {"cod": "CE 302", "linea": "MONCAR", "marca": "Lavarropas", "cat": "Lavarropas", "desc": "WHIRLPOOL Y OTROS", "dims": "5x12.5x35", "esp": 5.0, "anch": 12.5, "larg": 35.0, "terminal": null, "precio": 4280, "stock": true}, {"cod": "CE 303", "linea": "MONCAR", "marca": "Lavarropas", "cat": "Lavarropas", "desc": "WHIRLPOOL Y OTROS", "dims": "5x13.5x35", "esp": 5.0, "anch": 13.5, "larg": 35.0, "terminal": null, "precio": 4800, "stock": true}, {"cod": "CE 304", "linea": "MONCAR", "marca": "Lavarropas", "cat": "Lavarropas", "desc": "WHIRLPOOL Y OTROS", "dims": "5x14.5x35", "esp": 5.0, "anch": 14.5, "larg": 35.0, "terminal": null, "precio": 4800, "stock": true}, {"cod": "CE 307", "linea": "MONCAR", "marca": "Hidrolavadora", "cat": "Hidrolavadoras", "desc": "HIDRO. GAMA G2513/2514 HIDRO B&D", "dims": "7x13x25", "esp": 7.0, "anch": 13.0, "larg": 25.0, "terminal": null, "precio": 7380, "stock": true}, {"cod": "CE 308", "linea": "MONCAR", "marca": "Hidrolavadora", "cat": "Hidrolavadoras", "desc": "HIDROLAVADORA CHICA", "dims": "6x10", "esp": 6.0, "anch": 10.0, "larg": null, "terminal": null, "precio": 7260, "stock": true}, {"cod": "CE 309", "linea": "MONCAR", "marca": "Hidrolavadora", "cat": "Hidrolavadoras", "desc": "HIDROLAVADORA", "dims": "6.3x11.3x25", "esp": 6.3, "anch": 11.3, "larg": 25.0, "terminal": null, "precio": 6120, "stock": false}, {"cod": "CF 001", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Lijadoras", "desc": "LIJADORAS - PULIDORAS LIXA", "dims": "6.00x9.00x25.00", "esp": 6.0, "anch": 9.0, "larg": 25.0, "terminal": 1, "precio": 3760, "stock": true}, {"cod": "CF 002", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Taladros", "desc": "TALADROS MARK- NIG- NTX- LO- LV", "dims": "6.00x9.00x20.00", "esp": 6.0, "anch": 9.0, "larg": 20.0, "terminal": 10, "precio": 3540, "stock": true}, {"cod": "CF 003", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Taladros", "desc": "TALADROS MINI 8 Y 10- N 210/ 213/ 210 E/ 213 E/ 213 B", "dims": "5.60x5.60x16.00", "esp": 5.6, "anch": 5.6, "larg": 16.0, "terminal": 10, "precio": 2780, "stock": true}, {"cod": "CF 004", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Otros", "desc": "RR", "dims": "5.00x7.00x18.00", "esp": 5.0, "anch": 7.0, "larg": 18.0, "terminal": 10, "precio": 3760, "stock": true}, {"cod": "CF 005", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Amoladoras", "desc": "AMOL. 7\"- MOD. AL 180", "dims": "6.00x12.00x20.00", "esp": 6.0, "anch": 12.0, "larg": 20.0, "terminal": 1, "precio": 5590, "stock": true}, {"cod": "CF 009", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Taladros", "desc": "LINEA 700- TALADROS- CAL 2301/ 2303 LIJADORA/ TAL. VARIOS", "dims": "6.30x6.30x15.00", "esp": 6.3, "anch": 6.3, "larg": 15.0, "terminal": 5, "precio": 2530, "stock": true}, {"cod": "CF 010", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Taladros", "desc": "TALADROS LINEA AR", "dims": "6.00x15.00", "esp": null, "anch": 6.0, "larg": 15.0, "terminal": 5, "precio": 3280, "stock": false}, {"cod": "CF 011", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Amoladoras", "desc": "AMOL. 4 1/2 \"- SAG 500- CALADORA M 531", "dims": "6.30x6.30x13.00", "esp": 6.3, "anch": 6.3, "larg": 13.0, "terminal": 7, "precio": 3280, "stock": false}, {"cod": "CF 012", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Otros", "desc": "KG 11/ KG75 (CON AVISO DE DESGASTE)", "dims": "6.30x8.00x15.00", "esp": 6.3, "anch": 8.0, "larg": 15.0, "terminal": 9, "precio": 3380, "stock": true}, {"cod": "CF 013", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Sierras", "desc": "SIERRA CIRCULAR DE 7 1/4 \" Y 9\"", "dims": "6.30x9.30x14.00", "esp": 6.3, "anch": 9.3, "larg": 14.0, "terminal": 7, "precio": 2200, "stock": false}, {"cod": "CF 014", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Amoladoras", "desc": "AMOLADORAS SMEA DE 7 \" Y 9\"", "dims": "7.00x12.00x26.00", "esp": 7.0, "anch": 12.0, "larg": 26.0, "terminal": 1, "precio": 5500, "stock": true}, {"cod": "CF 015", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Amoladoras", "desc": "AMOLADORA AG/C- AMOL. 7\" HD 2180- AMOL. 9\" HD 2230", "dims": "6.00x12.00x21.00", "esp": 6.0, "anch": 12.0, "larg": 21.0, "terminal": 1, "precio": 5590, "stock": true}, {"cod": "CF 016", "linea": "MONCAR", "marca": "Bosch", "cat": "Amoladoras", "desc": "AMOLADORAS 7\" Y 9\" - MOD. 1321/ 2 - 1331/ 2 CON AVISO DE DESGASTE", "dims": "6.30x16.00x22.00", "esp": 6.3, "anch": 16.0, "larg": 22.0, "terminal": 15, "precio": 5640, "stock": true}, {"cod": "CF 017", "linea": "MONCAR", "marca": "Bosch", "cat": "Otros", "desc": "AMOL 41/2¨ GWS 6-115/GWS 7-115/GWS 7-115ET/GWS 8-115 (CON AVISO DE DESGASTE)", "dims": "5.00x8.00x17", "esp": 5.0, "anch": 8.0, "larg": 17.0, "terminal": 2, "precio": 3760, "stock": true}, {"cod": "CF 018", "linea": "MONCAR", "marca": "Bosch", "cat": "Amoladoras", "desc": "AMOL. DE 7\" Y 9\"- MOD. ALEMAN 1307/ 1309", "dims": "6.00x14.00x20.00", "esp": 6.0, "anch": 14.0, "larg": 20.0, "terminal": 11, "precio": 4800, "stock": false}, {"cod": "CF 019", "linea": "MONCAR", "marca": "Bosch", "cat": "Taladros", "desc": "TALADROS MOD. 1106/ 350/ GBM 10/ 13 RB/ 1163/ 1171/ 1184/ 11226", "dims": "5.00x8.00x17.00", "esp": 5.0, "anch": 8.0, "larg": 17.0, "terminal": 10, "precio": 3540, "stock": true}, {"cod": "CF 020", "linea": "MONCAR", "marca": "Bosch", "cat": "Amoladoras", "desc": "AMOL. 7 y 9\" GWS 22-10/22-230/GWS 24-180/24-230/GWS 26-180(CON AVISO)", "dims": "6.30x16.00x22.00", "esp": 6.3, "anch": 16.0, "larg": 22.0, "terminal": 2, "precio": 5640, "stock": true}, {"cod": "CF 021", "linea": "MONCAR", "marca": "Bosch", "cat": "Taladros", "desc": "TAL. PER. 13- MOD. 3161/ 3238/ 1169 CAL. PST 54 PE", "dims": "6.30x6.30x16.00", "esp": 6.3, "anch": 6.3, "larg": 16.0, "terminal": 10, "precio": 3280, "stock": true}, {"cod": "CF 022", "linea": "MONCAR", "marca": "Bosch", "cat": "Otros", "desc": "MARTILLO MODELO 11205 CON AVISO", "dims": "6.30x10.00x17.00", "esp": 6.3, "anch": 10.0, "larg": 17.0, "terminal": 15, "precio": 3540, "stock": true}, {"cod": "CF 023", "linea": "MONCAR", "marca": "Bosch", "cat": "Otros", "desc": "CON AVISO DE DESGASTE", "dims": "6.3x12.3x19", "esp": 6.3, "anch": 12.3, "larg": 19.0, "terminal": 14, "precio": 4550, "stock": true}, {"cod": "CF 024", "linea": "MONCAR", "marca": "Bosch", "cat": "Amoladoras", "desc": "AMOL. DE 4 1/2\" - MOD. 1327", "dims": "6.00x6.00x16.00", "esp": 6.0, "anch": 6.0, "larg": 16.0, "terminal": 18, "precio": 3280, "stock": true}, {"cod": "CF 025", "linea": "MONCAR", "marca": "Bosch", "cat": "Taladros", "desc": "TALADRO ROTOPERCUTOR MOD. 0173/ 1111", "dims": "6.50x8.00x17.00", "esp": 6.5, "anch": 8.0, "larg": 17.0, "terminal": 16, "precio": 3280, "stock": true}, {"cod": "CF 027", "linea": "MONCAR", "marca": "Dover", "cat": "Lijadoras", "desc": "LIJADORA- PULIDORA", "dims": "6.00x9.00x27.00", "esp": 6.0, "anch": 9.0, "larg": 27.0, "terminal": 10, "precio": 5010, "stock": true}, {"cod": "CF 028", "linea": "MONCAR", "marca": "Dover", "cat": "Amoladoras", "desc": "AMOLADORA DE 7 Y 9- LINEA 80", "dims": "6.00x12.00x27.00", "esp": 6.0, "anch": 12.0, "larg": 27.0, "terminal": 1, "precio": 5590, "stock": true}, {"cod": "CF 029", "linea": "MONCAR", "marca": "Dover", "cat": "Amoladoras", "desc": "AMOLADORA DE 7 Y 9- LINEA 90", "dims": "6.40x16.00x20.00", "esp": 6.4, "anch": 16.0, "larg": 20.0, "terminal": 1, "precio": 5180, "stock": false}, {"cod": "CF 030", "linea": "MONCAR", "marca": "Dover", "cat": "Amoladoras", "desc": "AMOLADORA DE 4 (MODELO VIEJO)", "dims": "6.00x6.00x12.00", "esp": 6.0, "anch": 6.0, "larg": 12.0, "terminal": 5, "precio": 2530, "stock": true}, {"cod": "CF 031", "linea": "MONCAR", "marca": "Dover", "cat": "Amoladoras", "desc": "AMOLADORA DE 4 (MODELO NUEVO)", "dims": "6.00x6.00x18.00", "esp": 6.0, "anch": 6.0, "larg": 18.0, "terminal": 10, "precio": 3280, "stock": false}, {"cod": "CF 033", "linea": "MONCAR", "marca": "Dremel", "cat": "Otros", "desc": "MINITORNO", "dims": "4x5x15", "esp": 4.0, "anch": 5.0, "larg": 15.0, "terminal": 5, "precio": 4240, "stock": false}, {"cod": "CF 034", "linea": "MONCAR", "marca": "Drill - Met", "cat": "Otros", "desc": "MINI DRIL", "dims": "4.00x4.00x12.00", "esp": 4.0, "anch": 4.0, "larg": 12.0, "terminal": 5, "precio": 4240, "stock": true}, {"cod": "CF 035", "linea": "MONCAR", "marca": "Drill - Met", "cat": "Otros", "desc": "TORNO 1/4\"", "dims": "5.00x7.00x19.00", "esp": 5.0, "anch": 7.0, "larg": 19.0, "terminal": 7, "precio": 4240, "stock": false}, {"cod": "CF 036", "linea": "MONCAR", "marca": "Drill - Met", "cat": "Otros", "desc": "TORNO 1/8\"", "dims": "5.00x7.00x13.00", "esp": 5.0, "anch": 7.0, "larg": 13.0, "terminal": 7, "precio": 4240, "stock": false}, {"cod": "CF 040", "linea": "MONCAR", "marca": "Hitachi", "cat": "Otros", "desc": "PDM 180/230- PDU 180/230- DPU 180/230-PDH 180- PSU 7/8/9- PSP 9- CC 16", "dims": "7.00x17.00x17.00", "esp": 7.0, "anch": 17.0, "larg": 17.0, "terminal": 1, "precio": 5420, "stock": true}, {"cod": "CF 041", "linea": "MONCAR", "marca": "Hitachi", "cat": "Otros", "desc": "PDM 115.PDP 115-PDS 115- F 20- F 20 A- JH 60- JHV 60. JH 560", "dims": "6.50x7.50x13.00", "esp": 6.5, "anch": 7.5, "larg": 13.0, "terminal": 10, "precio": 2780, "stock": true}, {"cod": "CF 042", "linea": "MONCAR", "marca": "Hitachi", "cat": "Otros", "desc": "SAT 180- F 30 A-SB 75- PSU 6- PS 7 B-TR 8- PR 25 B- PR 38 B", "dims": "7.00x11.00x17.00", "esp": 7.0, "anch": 11.0, "larg": 17.0, "terminal": 1, "precio": 5530, "stock": true}, {"cod": "CF 043", "linea": "MONCAR", "marca": "Hitachi", "cat": "Otros", "desc": "FFE 20- FH 35- FSO 93", "dims": "6.00x6.00x13.00", "esp": 6.0, "anch": 6.0, "larg": 13.0, "terminal": 10, "precio": 3280, "stock": true}, {"cod": "CF 044", "linea": "MONCAR", "marca": "Hitachi", "cat": "Otros", "desc": "PR50-PS11-F40/ 50-DUPN2/CS280A/350A/F50A/ P40/ CS28B/ 35B/ NUK- RN", "dims": "7.00x13.00x17.00", "esp": 7.0, "anch": 13.0, "larg": 17.0, "terminal": 1, "precio": 5530, "stock": true}, {"cod": "CF 045", "linea": "MONCAR", "marca": "Hitachi", "cat": "Otros", "desc": "HU 12/ 14- SR 15- PS 11- SB 110", "dims": "7.00x15.00x17.00", "esp": 7.0, "anch": 15.0, "larg": 17.0, "terminal": 1, "precio": 5530, "stock": false}, {"cod": "CF 053", "linea": "MONCAR", "marca": "Makita", "cat": "Otros", "desc": "MARTILLOCB175-MARTILLOHR5210-MARTILLOHR4510C-HM1214C-HM1317CB-HM1203C-HM1307CB", "dims": "6x13x27", "esp": 6.0, "anch": 13.0, "larg": 27.0, "terminal": null, "precio": 6330, "stock": true}, {"cod": "CF 054", "linea": "MONCAR", "marca": "Makita", "cat": "Amoladoras", "desc": "(CB303)AMOLADORA 4 1/2 9015-TALADRO6305-LIJADORA9404/9920/9927-CEPILLOMKPO83", "dims": "5x11x15.50", "esp": 5.0, "anch": 11.0, "larg": 15.5, "terminal": 10, "precio": 3720, "stock": true}, {"cod": "CF 055", "linea": "MONCAR", "marca": "Makita", "cat": "Taladros", "desc": "(CB55)CORTACERCO UH4500/UH6300-TALADRO6300-4/6300T/6701B-AMOLAD.4 1/2 9500 N", "dims": "5.00x8.00x12.00", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 5170, "stock": true}, {"cod": "CF 056", "linea": "MONCAR", "marca": "Makita", "cat": "Amoladoras", "desc": "(CB203) AMOL. DE 7\" Y 9\" GA 7020/70405/9067/9069/9049 -SIERRA 2414 NB", "dims": "7.00x18.00x16.00", "esp": 7.0, "anch": 18.0, "larg": 16.0, "terminal": 1, "precio": 5690, "stock": true}, {"cod": "CF 057", "linea": "MONCAR", "marca": "Makita", "cat": "Sierras", "desc": "(CB155)MARTILLO10KG1202/HM1301/HR4500/HR5000-AMOL7\"/9\"9609-SIERRA CIR.5007/5700", "dims": "6.30x13.30x18.00", "esp": 6.3, "anch": 13.3, "larg": 18.0, "terminal": 1, "precio": 5690, "stock": true}, {"cod": "CF 058", "linea": "MONCAR", "marca": "Martins", "cat": "Amoladoras", "desc": "AMOL. MP 9007/ 9009/ 9700/ 9900- MPRA 9700/ 9900", "dims": "6.50x16.00x16.00", "esp": 6.5, "anch": 16.0, "larg": 16.0, "terminal": 1, "precio": 5180, "stock": true}, {"cod": "CF 059", "linea": "MONCAR", "marca": "Martins", "cat": "Amoladoras", "desc": "AMOL. MP 635- MS 9004/ 9400/ 9450- CALAD. MC 2000/3000- LIJ. MH 40", "dims": "6.00x6.00x17.00", "esp": 6.0, "anch": 6.0, "larg": 17.0, "terminal": 10, "precio": 3280, "stock": false}, {"cod": "CF 060", "linea": "MONCAR", "marca": "Martins", "cat": "Taladros", "desc": "TAL. ML 5/ 5N/ NB/ NBA/ NA- M510/ 510 V/ 513- MP 10 N2/ 13 MZA", "dims": "6.00x6.00x16.00", "esp": 6.0, "anch": 6.0, "larg": 16.0, "terminal": 5, "precio": 2530, "stock": true}, {"cod": "CF 061", "linea": "MONCAR", "marca": "Martins", "cat": "Taladros", "desc": "LIJADORAS MHV2- MH24/ 35/ 45. TALADRO PESADO ME 5- MI", "dims": "6.00x9.00x22.00", "esp": 6.0, "anch": 9.0, "larg": 22.0, "terminal": 1, "precio": 3760, "stock": true}, {"cod": "CF 062", "linea": "MONCAR", "marca": "Martins", "cat": "Amoladoras", "desc": "CB 152- AMOLADORA MS 8007", "dims": "6.30x13.30x18.00", "esp": 6.3, "anch": 13.3, "larg": 18.0, "terminal": 1, "precio": 5690, "stock": true}, {"cod": "CF 063", "linea": "MONCAR", "marca": "Martins", "cat": "Sierras", "desc": "SIERRA CIRCULAR 7\" MY 184", "dims": "6.00x9.00x15.00", "esp": 6.0, "anch": 9.0, "larg": 15.0, "terminal": 1, "precio": 2780, "stock": true}, {"cod": "CF 066", "linea": "MONCAR", "marca": "Metabo", "cat": "Otros", "desc": "CON AVISO DESGASTE", "dims": "6.00x8.00x17.00", "esp": 6.0, "anch": 8.0, "larg": 17.0, "terminal": 9, "precio": 3860, "stock": true}, {"cod": "CF 067", "linea": "MONCAR", "marca": "Metabo", "cat": "Otros", "desc": "CON AVISO DE DESGASTE", "dims": "8.00x13.90x18.00", "esp": 8.0, "anch": 13.9, "larg": 18.0, "terminal": 18, "precio": 5060, "stock": true}, {"cod": "CF 068", "linea": "MONCAR", "marca": "Peugeot", "cat": "Taladros", "desc": "TAL. 10 MOD. PC 400 ER -PC 402 P- LIJ. ORB. PV 240- CORT. CERC.JH 42 F", "dims": "5.50x5.50x12.00", "esp": 5.5, "anch": 5.5, "larg": 12.0, "terminal": 7, "precio": 1640, "stock": true}, {"cod": "CF 069", "linea": "MONCAR", "marca": "Peugeot", "cat": "Amoladoras", "desc": "TAL. 16 MOD. PC 1010 RCA- AMOL. ANG. 115 AM", "dims": "6.00x8.00x15.00", "esp": 6.0, "anch": 8.0, "larg": 15.0, "terminal": 7, "precio": 1760, "stock": true}, {"cod": "CF 070", "linea": "MONCAR", "marca": "Peugeot", "cat": "Amoladoras", "desc": "AMOL. ANG. 7\" MOD. 180 MA Y 9\" MOD. 230 MA", "dims": "9.00x13.90x22.00", "esp": 9.0, "anch": 13.9, "larg": 22.0, "terminal": 15, "precio": 6080, "stock": true}, {"cod": "CF 094", "linea": "MONCAR", "marca": "Skil", "cat": "Taladros", "desc": "GARLOPA 944- TAL. 6432/ 6634- LIJ. ORB. 663- LIJ. BANDA 7313", "dims": "6.00x7.00x12.00", "esp": 6.0, "anch": 7.0, "larg": 12.0, "terminal": 5, "precio": 1760, "stock": false}, {"cod": "CF 095", "linea": "MONCAR", "marca": "Skil", "cat": "Taladros", "desc": "TAL. 503/ 541/ 560/ 569- CALADORAS 432/ 482/ 487- CORTAD. 532H/ 533H", "dims": "4.80x6.30x15.00", "esp": 4.8, "anch": 6.3, "larg": 15.0, "terminal": 5, "precio": 2020, "stock": true}, {"cod": "CF 096", "linea": "MONCAR", "marca": "Skil", "cat": "Sierras", "desc": "SIERRAS MOD. 538/ 574", "dims": "6.30x9.50x13.00", "esp": 6.3, "anch": 9.5, "larg": 13.0, "terminal": 5, "precio": 2130, "stock": true}, {"cod": "CF 097", "linea": "MONCAR", "marca": "Stayer", "cat": "Amoladoras", "desc": "AMOL. 4 1/2\"- SA7/ SA107- SAP 55- SA 115- SA 100- W 500- L 190", "dims": "5.90x5.90x14.00", "esp": 5.9, "anch": 5.9, "larg": 14.0, "terminal": 5, "precio": 3540, "stock": true}, {"cod": "CF 098", "linea": "MONCAR", "marca": "Stayer", "cat": "Amoladoras", "desc": "AMOL. 7\"- SA 12/ SA 12 AL/ 9\"- SA 10/ SA 10 AL CON AVISO DE DESGASTE", "dims": "6.00x13.80x22.00", "esp": 6.0, "anch": 13.8, "larg": 22.0, "terminal": 15, "precio": 5420, "stock": true}, {"cod": "CF 099", "linea": "MONCAR", "marca": "Stayer", "cat": "Amoladoras", "desc": "AMOLADORAS 7\" Y 9\" (MODELO VIEJO)", "dims": "8.80x12.00x22.00", "esp": 8.8, "anch": 12.0, "larg": 22.0, "terminal": 1, "precio": 5830, "stock": true}, {"cod": "CF 100", "linea": "MONCAR", "marca": "Stayer", "cat": "Amoladoras", "desc": "AMOLADORAS 7\" Y 9\" (2300 W) MOD. 295/ 297", "dims": "8.80x13.80x22.00", "esp": 8.8, "anch": 13.8, "larg": 22.0, "terminal": 9, "precio": 5760, "stock": true}, {"cod": "CF 114", "linea": "MONCAR", "marca": "Makita", "cat": "Otros", "desc": "CB 52- AMOL DE 4 MOD. 9500 N", "dims": "5.00x8.00x9.00", "esp": 5.0, "anch": 8.0, "larg": 9.0, "terminal": 1, "precio": 3280, "stock": false}, {"cod": "CF 115", "linea": "MONCAR", "marca": "Makita", "cat": "Lijadoras", "desc": "CB 1- CEPILLOS 1000 SB- RECTIFICADORA 903", "dims": "5.00x5.00x10.00", "esp": 5.0, "anch": 5.0, "larg": 10.0, "terminal": 10, "precio": 3280, "stock": true}, {"cod": "CF 116", "linea": "MONCAR", "marca": "Makita", "cat": "Amoladoras", "desc": "(CB100)MARTILLO HM810/HR2010- CEPILLO PC1100- LIJ.9924B/9741/99003-AMOL.4 1/2 9207B", "dims": "6.00x10.00x15.00", "esp": 6.0, "anch": 10.0, "larg": 15.0, "terminal": 1, "precio": 5310, "stock": false}, {"cod": "CF 118", "linea": "MONCAR", "marca": "Metabo", "cat": "Taladros", "desc": "067- TALADROS 621- MART. 6010/ 6018/ 6019/ 6026/ 102", "dims": "6.25x8.00x17.00", "esp": 6.25, "anch": 8.0, "larg": 17.0, "terminal": 3, "precio": 2780, "stock": true}, {"cod": "CF 119", "linea": "MONCAR", "marca": "Metabo", "cat": "Taladros", "desc": "123/ 126/ 125- TALADROS- BE 250- SR 356- SXE 125-SBE 540/550", "dims": "5.00x8.00x17.00", "esp": 5.0, "anch": 8.0, "larg": 17.0, "terminal": 5, "precio": 2780, "stock": true}, {"cod": "CF 178", "linea": "MONCAR", "marca": "De Walt", "cat": "Lijadoras", "desc": "LUSTRALIJADORA WP 849X", "dims": "7x10.5x17", "esp": 7.0, "anch": 10.5, "larg": 17.0, "terminal": 1, "precio": 3540, "stock": true}, {"cod": "CF 179", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "DWE 508 NUEVO-ATORNILLADOR 255-268 DWD 024", "dims": "6.5x8x14", "esp": 6.5, "anch": 8.0, "larg": 14.0, "terminal": 7, "precio": 2530, "stock": false}, {"cod": "CF 180", "linea": "MONCAR", "marca": "De Walt", "cat": "Amoladoras", "desc": "AMOLADORA DWE 4212/4214", "dims": "6.5x12x14", "esp": 6.5, "anch": 12.0, "larg": 14.0, "terminal": 13, "precio": 4550, "stock": true}, {"cod": "CF 181", "linea": "MONCAR", "marca": "De Walt", "cat": "Amoladoras", "desc": "AMOLADORA  ANGULAR 4 1/2 MOD.4020", "dims": "6.50x8x17", "esp": 6.5, "anch": 8.0, "larg": 17.0, "terminal": 13, "precio": 3910, "stock": true}, {"cod": "CF 183", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "D28490/D28491/D28496/D28474W/D28476W/D28494M/D28496M(CON AVISO DE DESGASTE)", "dims": "6.00x15.50x26.00", "esp": 6.0, "anch": 15.5, "larg": 26.0, "terminal": 2, "precio": 5830, "stock": true}, {"cod": "CF 184", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "", "dims": "6.00x9.00x14.00", "esp": 6.0, "anch": 9.0, "larg": 14.0, "terminal": 14, "precio": 3540, "stock": true}, {"cod": "CF 185", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "DW 861 CORTADORA DE HORMIGON CON AVISO DE DESGASTE", "dims": "6.15x9.90x18.30", "esp": 6.15, "anch": 9.9, "larg": 18.3, "terminal": 20, "precio": 5310, "stock": true}, {"cod": "CF 186", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "CON AVISO DE DESGASTE", "dims": "5.20x9.40x18.00", "esp": 5.2, "anch": 9.4, "larg": 18.0, "terminal": 2, "precio": 4070, "stock": true}, {"cod": "CF 187", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "D25103/D25013K/D25113//D25123K/D25303/D25124K/D25313K/D25114K(CON AVISO DESG.)", "dims": "5.00x9.50x13.00", "esp": 5.0, "anch": 9.5, "larg": 13.0, "terminal": 14, "precio": 3540, "stock": true}, {"cod": "CF 188", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "CON AVISO DE DESGASTE DW621 FRESADORA", "dims": "5.90x9.90x23.00", "esp": 5.9, "anch": 9.9, "larg": 23.0, "terminal": 2, "precio": 5300, "stock": true}, {"cod": "CF 189", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "D28111/D28112/D28136AR/D28143/D28136/D28114 (CON AVISO DE DESGASTE)", "dims": "6x10x13", "esp": 6.0, "anch": 10.0, "larg": 13.0, "terminal": 9, "precio": 3760, "stock": true}, {"cod": "CF 190", "linea": "MONCAR", "marca": "De Walt", "cat": "Lijadoras", "desc": "DW402/DW411/DW412/DW421/LIJADORA D26441/D26451/CAL. DW313/318/317/331/433", "dims": "6.00x7.00x14.00", "esp": 6.0, "anch": 7.0, "larg": 14.0, "terminal": 8, "precio": 3760, "stock": true}, {"cod": "CF 191", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "DW476/DWDW848/DW852/DW498/DW849/DW478/DW492/DW852/DW892(CON AVISO DESG.)", "dims": "6.30x16.00x24.00", "esp": 6.3, "anch": 16.0, "larg": 24.0, "terminal": 14, "precio": 5590, "stock": true}, {"cod": "CF 192", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "CON AVISO DESGASTE", "dims": "6.30x8.00x14.00", "esp": 6.3, "anch": 8.0, "larg": 14.0, "terminal": 9, "precio": 3370, "stock": true}, {"cod": "CF 193", "linea": "MONCAR", "marca": "De Walt", "cat": "Taladros", "desc": "TALADROSDW502/DW502K/DW107/DW508S/DW508SK/DW507/DW503/DW505/512/210G/130V", "dims": "6.30x6.30x13.00", "esp": 6.3, "anch": 6.3, "larg": 13.0, "terminal": 8, "precio": 3540, "stock": true}, {"cod": "CF 194", "linea": "MONCAR", "marca": "De Walt", "cat": "Taladros", "desc": "TALADRO PERCUTOR-. DW 501/ 503/ 508 - 507 TP 10/ 13 mm.", "dims": "6.00x7.00x16.00", "esp": 6.0, "anch": 7.0, "larg": 16.0, "terminal": 8, "precio": 4880, "stock": false}, {"cod": "CF 195", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "CON AVISO DESGASTE", "dims": "6.30x12.50x24.00", "esp": 6.3, "anch": 12.5, "larg": 24.0, "terminal": 14, "precio": 5590, "stock": true}, {"cod": "CF 196", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "CON AVISO DE DESGASTE", "dims": "6.00x7.00x18.00", "esp": 6.0, "anch": 7.0, "larg": 18.0, "terminal": 8, "precio": 4880, "stock": true}, {"cod": "CF 197", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "CORTADORA DE CEMENTO DW 301 3062", "dims": "7.00x11.00x18.00", "esp": 7.0, "anch": 11.0, "larg": 18.0, "terminal": 1, "precio": 5530, "stock": true}, {"cod": "CF 198", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "CPRTADORA SENSITIVA DW 870 TRAZADORA 14\"", "dims": "6.50x14.00x20.00", "esp": 6.5, "anch": 14.0, "larg": 20.0, "terminal": 1, "precio": 5060, "stock": true}, {"cod": "CF 241", "linea": "MONCAR", "marca": "Cobra", "cat": "Amoladoras", "desc": "AMOL.ANGULAR 4 1/2\"- MOD. SIM 115 - SPRO/ BPRO", "dims": "5.00x8.00x12.00", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 2530, "stock": true}, {"cod": "CF 242", "linea": "MONCAR", "marca": "Cobra", "cat": "Amoladoras", "desc": "LLUSTRALIJADORA MOD. LL 180 - AMOL.7 \" -SIM 180", "dims": "6.00x10.00x26.00", "esp": 6.0, "anch": 10.0, "larg": 26.0, "terminal": 10, "precio": 5060, "stock": true}, {"cod": "CF 243", "linea": "MONCAR", "marca": "Cobra", "cat": "Otros", "desc": "CORTADORA SENSITIVA MOD. CO 355", "dims": "8.00x12.00x27.00", "esp": 8.0, "anch": 12.0, "larg": 27.0, "terminal": 1, "precio": 5300, "stock": true}, {"cod": "CF 250", "linea": "MONCAR", "marca": "Versa", "cat": "Taladros", "desc": "TALADRO DE MANO MOD KPHDO 306 380W", "dims": "4.90x7.90x11.30", "esp": 4.9, "anch": 7.9, "larg": 11.3, "terminal": 10, "precio": 2260, "stock": true}, {"cod": "CF 251", "linea": "MONCAR", "marca": "Versa", "cat": "Taladros", "desc": "TALADRO DEIMPACTO VELOCIDAD VARIABLE MOD KPIDO 807 810W", "dims": "4.90x7.90x11.60", "esp": 4.9, "anch": 7.9, "larg": 11.6, "terminal": 1, "precio": 2530, "stock": true}, {"cod": "CF 252", "linea": "MONCAR", "marca": "Versa", "cat": "Taladros", "desc": "TALADRO MANO VELOCIDAD VARIABLE MOD KPIDO 507 550W", "dims": "5.00x8.00x12.00", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 10, "precio": 2380, "stock": false}, {"cod": "CF 253", "linea": "MONCAR", "marca": "Versa", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR MOD KPAGO 507 500W/ KPAGO 705 750W", "dims": "4.85x7.85x12.50", "esp": 4.85, "anch": 7.85, "larg": 12.5, "terminal": 10, "precio": 2300, "stock": false}, {"cod": "CF 255", "linea": "MONCAR", "marca": "Versa", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR MOD KPAGO 911 950W", "dims": "5.90x8.90x13.00", "esp": 5.9, "anch": 8.9, "larg": 13.0, "terminal": 1, "precio": 3030, "stock": false}, {"cod": "CF 256", "linea": "MONCAR", "marca": "Versa", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR MOD KPAG2002 2400W", "dims": "7.90x14.40x21.00", "esp": 7.9, "anch": 14.4, "larg": 21.0, "terminal": 1, "precio": 5060, "stock": false}, {"cod": "CF 257", "linea": "MONCAR", "marca": "Versa", "cat": "Sierras", "desc": "CALADORA ELECTRICA MOD KPJS 0704 750W", "dims": "4.90x7.90x12.80", "esp": 4.9, "anch": 7.9, "larg": 12.8, "terminal": 1, "precio": 2300, "stock": false}, {"cod": "CF 258", "linea": "MONCAR", "marca": "Versa", "cat": "Otros", "desc": "CORTADORA SENSITIVA MOD A270 2200W", "dims": "6.35x13.40x16.30", "esp": 6.35, "anch": 13.4, "larg": 16.3, "terminal": 2, "precio": 5060, "stock": false}, {"cod": "CF 260", "linea": "MONCAR", "marca": "Versa", "cat": "Taladros", "desc": "TALADRO RECARGABLE MOD KPCDO 217 VELOCIDAD VARIABLE", "dims": "4.80x7.90x11.50", "esp": 4.8, "anch": 7.9, "larg": 11.5, "terminal": 10, "precio": 2820, "stock": false}, {"cod": "CF 261", "linea": "MONCAR", "marca": "Versa", "cat": "Taladros", "desc": "TALADRO DE IMPACTO MOD KPSTO 102 1200W", "dims": "5.30x10.35x19.60", "esp": 5.3, "anch": 10.35, "larg": 19.6, "terminal": null, "precio": 3410, "stock": false}, {"cod": "CF 262", "linea": "MONCAR", "marca": "Versa", "cat": "Taladros", "desc": "TALADRO ROTOPERCUTOR MOD KPRHO 602 780W", "dims": "6.40x7.45x12.70", "esp": 6.4, "anch": 7.45, "larg": 12.7, "terminal": 10, "precio": 3410, "stock": false}, {"cod": "CF 263", "linea": "MONCAR", "marca": "Versa", "cat": "Otros", "desc": "FRESADORA DE MANO MOD KPER 1203 1250W", "dims": "6.25x9.00x15.00", "esp": 6.25, "anch": 9.0, "larg": 15.0, "terminal": 1, "precio": 3410, "stock": false}, {"cod": "CF 264", "linea": "MONCAR", "marca": "Versa", "cat": "Otros", "desc": "ACANALADORA DE MUROS MOD KPEHO 901 930W", "dims": "6.35x10.85x13.80", "esp": 6.35, "anch": 10.85, "larg": 13.8, "terminal": null, "precio": 3990, "stock": false}, {"cod": "CF 341", "linea": "MONCAR", "marca": "Power Tools", "cat": "Otros", "desc": "CON AVISO DE DESGASTE", "dims": "6.50x7.50x14.00", "esp": 6.5, "anch": 7.5, "larg": 14.0, "terminal": 9, "precio": 2620, "stock": true}, {"cod": "CF 342", "linea": "MONCAR", "marca": "Power Tools", "cat": "Amoladoras", "desc": "AMOL. 4 1/2\" MOD. A 4115", "dims": "6.50x7.50x14.00", "esp": 6.5, "anch": 7.5, "larg": 14.0, "terminal": 3, "precio": 2780, "stock": true}, {"cod": "CF 343", "linea": "MONCAR", "marca": "Power Tools", "cat": "Sierras", "desc": "CALADORA MOD. K 3360", "dims": "6.50x7.50x14.00", "esp": 6.5, "anch": 7.5, "larg": 14.0, "terminal": 10, "precio": 2780, "stock": false}, {"cod": "CF 344", "linea": "MONCAR", "marca": "Power Tools", "cat": "Sierras", "desc": "SIERRA DE MESA MOD. C 8250 T", "dims": "6.30x10.80x21.00", "esp": 6.3, "anch": 10.8, "larg": 21.0, "terminal": 9, "precio": 2310, "stock": true}, {"cod": "CF 345", "linea": "MONCAR", "marca": "Power Tools", "cat": "Amoladoras", "desc": "AMOL. 7\" MOD. A 9180", "dims": "6.20x15.80x19.00", "esp": 6.2, "anch": 15.8, "larg": 19.0, "terminal": 9, "precio": 5640, "stock": false}, {"cod": "CF 346", "linea": "MONCAR", "marca": "Power Tools", "cat": "Taladros", "desc": "TALADRO PERCUTOR MOD. P 2211", "dims": "5.00x8.00x14.00", "esp": 5.0, "anch": 8.0, "larg": 14.0, "terminal": 5, "precio": 2780, "stock": false}, {"cod": "CF 347", "linea": "MONCAR", "marca": "Power Tools", "cat": "Otros", "desc": "", "dims": "6.30x14.00x40.00", "esp": 6.3, "anch": 14.0, "larg": 40.0, "terminal": 9, "precio": 7590, "stock": false}, {"cod": "CF 348", "linea": "MONCAR", "marca": "Power Tools", "cat": "Aspiradoras", "desc": "ASPIRADORA MOD. V 8340", "dims": "6.30x8.00x40.00", "esp": 6.3, "anch": 8.0, "larg": 40.0, "terminal": 9, "precio": 5130, "stock": false}, {"cod": "CF 349", "linea": "MONCAR", "marca": "Power Tools", "cat": "Otros", "desc": "", "dims": "6.25x8.25x14.00", "esp": 6.25, "anch": 8.25, "larg": 14.0, "terminal": null, "precio": 2780, "stock": false}, {"cod": "CF 350", "linea": "MONCAR", "marca": "Power Tools", "cat": "Taladros", "desc": "TALADRO P6113/6513", "dims": "4.75x10.00x15.00", "esp": 4.75, "anch": 10.0, "larg": 15.0, "terminal": null, "precio": 2780, "stock": true}, {"cod": "CF 351", "linea": "MONCAR", "marca": "Power Tools", "cat": "Amoladoras", "desc": "AMOLADORA 7 Y 9\" MOD A-9230/ A-9180", "dims": "7.00x19.00x15.00", "esp": 7.0, "anch": 19.0, "larg": 15.0, "terminal": null, "precio": 5160, "stock": false}, {"cod": "CF 352", "linea": "MONCAR", "marca": "Power Tools", "cat": "Amoladoras", "desc": "AMOLADORA MOD A-4115 4 1/2\" - SIERRA CIRCULAR K-3360", "dims": "5.00x12.00x17.00", "esp": 5.0, "anch": 12.0, "larg": 17.0, "terminal": null, "precio": 3030, "stock": false}, {"cod": "CF 353", "linea": "MONCAR", "marca": "Power Tools", "cat": "Taladros", "desc": "TALADRO 13MM MOD P-8213", "dims": "8.00x10.00x11.50", "esp": 8.0, "anch": 10.0, "larg": 11.5, "terminal": null, "precio": 3030, "stock": false}, {"cod": "CF 354", "linea": "MONCAR", "marca": "Power Tools", "cat": "Taladros", "desc": "TALADRO T 9110 P9616 9213-9214", "dims": "5.50x8.50x15.00", "esp": 5.5, "anch": 8.5, "larg": 15.0, "terminal": null, "precio": 3030, "stock": false}, {"cod": "CF 355", "linea": "MONCAR", "marca": "Power Tools", "cat": "Amoladoras", "desc": "AMOLADORA 7 Y 9\" A-6180/230", "dims": "6.80x18.30x14.20", "esp": 6.8, "anch": 18.3, "larg": 14.2, "terminal": null, "precio": 3030, "stock": false}, {"cod": "CF 401", "linea": "MONCAR", "marca": "Stanley", "cat": "Amoladoras", "desc": "AMOL. 7\"Y 9\"", "dims": "6x16x22", "esp": 6.0, "anch": 16.0, "larg": 22.0, "terminal": 18, "precio": 4000, "stock": true}, {"cod": "CF 402", "linea": "MONCAR", "marca": "Stanley", "cat": "Amoladoras", "desc": "AMOL. 4 1/2\" 8115 AR", "dims": "5x11x16", "esp": 5.0, "anch": 11.0, "larg": 16.0, "terminal": 13, "precio": 3840, "stock": false}, {"cod": "CF 403", "linea": "MONCAR", "marca": "Stanley", "cat": "Otros", "desc": "MARTILLO", "dims": "6x11x18", "esp": 6.0, "anch": 11.0, "larg": 18.0, "terminal": null, "precio": 4440, "stock": true}, {"cod": "CF 491", "linea": "MONCAR", "marca": "Stingray", "cat": "Otros", "desc": "", "dims": "8.00x14.50x17.00", "esp": 8.0, "anch": 14.5, "larg": 17.0, "terminal": 1, "precio": 5370, "stock": true}, {"cod": "CF 492", "linea": "MONCAR", "marca": "Stingray", "cat": "Otros", "desc": "", "dims": "6.30x13.30x18.00", "esp": 6.3, "anch": 13.3, "larg": 18.0, "terminal": 2, "precio": 5640, "stock": true}, {"cod": "CF 493", "linea": "MONCAR", "marca": "Stingray", "cat": "Otros", "desc": "21/KP 08", "dims": "4.75x8.00x16.00", "esp": 4.75, "anch": 8.0, "larg": 16.0, "terminal": 10, "precio": 3640, "stock": false}, {"cod": "CF 494", "linea": "MONCAR", "marca": "Stingray", "cat": "Otros", "desc": "CORT. SENSITIVA 14\"", "dims": "7.90x13.90x22.00", "esp": 7.9, "anch": 13.9, "larg": 22.0, "terminal": 1, "precio": 5370, "stock": true}, {"cod": "CF 495", "linea": "MONCAR", "marca": "Stingray", "cat": "Amoladoras", "desc": "AMOLADORA 4\"- SIM 115 SPRO/ BPRO", "dims": "4.90x7.90x12.00", "esp": 4.9, "anch": 7.9, "larg": 12.0, "terminal": 1, "precio": 2530, "stock": true}, {"cod": "CF 496", "linea": "MONCAR", "marca": "Stingray", "cat": "Otros", "desc": "MARTILLO ELECTRONEUMATICO MOD. ZIC 26 PRO/ ZIC 12 PRO", "dims": "6.20x7.20x13.00", "esp": 6.2, "anch": 7.2, "larg": 13.0, "terminal": 20, "precio": 2130, "stock": true}, {"cod": "CF 497", "linea": "MONCAR", "marca": "Stingray", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR MOD. SIM 180 C", "dims": "6.90x10.90x17.00", "esp": 6.9, "anch": 10.9, "larg": 17.0, "terminal": 10, "precio": 3760, "stock": false}, {"cod": "CF 498", "linea": "MONCAR", "marca": "Stingray", "cat": "Sierras", "desc": "SIERRA CIRCULAR PARA CONCRETO MOD. ZIE 180 PRO", "dims": "6.40x13.40x18.00", "esp": 6.4, "anch": 13.4, "larg": 18.0, "terminal": 10, "precio": 4100, "stock": true}, {"cod": "CF 499", "linea": "MONCAR", "marca": "Stingray", "cat": "Otros", "desc": "MS 300", "dims": "6.50x13.50x18.00", "esp": 6.5, "anch": 13.5, "larg": 18.0, "terminal": 2, "precio": 5640, "stock": false}, {"cod": "CF 500", "linea": "MONCAR", "marca": "Stingray", "cat": "Otros", "desc": "SIM - 115 BO 1135 CON TRABA PORTA CARBON", "dims": "4.75x7.90x15.00", "esp": 4.75, "anch": 7.9, "larg": 15.0, "terminal": 10, "precio": 2260, "stock": true}, {"cod": "CF 501", "linea": "MONCAR", "marca": "Stingray", "cat": "Amoladoras", "desc": "AMOLADORA SIM/180", "dims": "5.00x16.00x22.00", "esp": 5.0, "anch": 16.0, "larg": 22.0, "terminal": 18, "precio": 4280, "stock": false}, {"cod": "CF 502", "linea": "MONCAR", "marca": "Salkor", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2\" AA 216", "dims": "4.75x7.9x15", "esp": 4.75, "anch": 7.9, "larg": 15.0, "terminal": 10, "precio": 2380, "stock": true}, {"cod": "CF 503", "linea": "MONCAR", "marca": "Salkor", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2\" AA 6115 (CON AVISO DE DESGASTE)", "dims": "5x10x18", "esp": 5.0, "anch": 10.0, "larg": 18.0, "terminal": 13, "precio": 4220, "stock": false}, {"cod": "CF 504", "linea": "MONCAR", "marca": "Salkor", "cat": "Taladros", "desc": "TALADRO TP 413 13 MM", "dims": "4.75x7.9x15", "esp": 4.75, "anch": 7.9, "larg": 15.0, "terminal": 10, "precio": 2380, "stock": false}, {"cod": "CF 505", "linea": "MONCAR", "marca": "Salkor", "cat": "Otros", "desc": "SENSITIVA CS 614", "dims": "7.9x14.4x18", "esp": 7.9, "anch": 14.4, "larg": 18.0, "terminal": 1, "precio": 5060, "stock": false}, {"cod": "CF 506", "linea": "MONCAR", "marca": "Salkor", "cat": "Otros", "desc": "GARLOPA", "dims": "6.3x9.3x14", "esp": 6.3, "anch": 9.3, "larg": 14.0, "terminal": 7, "precio": 2200, "stock": false}, {"cod": "CF 507", "linea": "MONCAR", "marca": "Salkor", "cat": "Taladros", "desc": "TALADRO TP513/515", "dims": "6x9x11", "esp": 6.0, "anch": 9.0, "larg": 11.0, "terminal": 10, "precio": 3410, "stock": false}, {"cod": "CF 508", "linea": "MONCAR", "marca": "Salkor", "cat": "Otros", "desc": "SIERA CIRCULAR SC407/508", "dims": "6.25x11x20", "esp": 6.25, "anch": 11.0, "larg": 20.0, "terminal": 13, "precio": 4650, "stock": false}, {"cod": "CF 509", "linea": "MONCAR", "marca": "Salkor", "cat": "Taladros", "desc": "TALADRO TP 813", "dims": "5x11x15.5", "esp": 5.0, "anch": 11.0, "larg": 15.5, "terminal": 1, "precio": 3850, "stock": false}, {"cod": "CF 550", "linea": "MONCAR", "marca": "Makita", "cat": "Otros", "desc": "CB-415 LLAVE IMPACTO 6905H", "dims": "6x9x13", "esp": 6.0, "anch": 9.0, "larg": 13.0, "terminal": null, "precio": 3540, "stock": false}, {"cod": "CF 551", "linea": "MONCAR", "marca": "Makita", "cat": "Otros", "desc": "CORTADORA DE CERCO 4100 NH", "dims": "5x11x15.5", "esp": 5.0, "anch": 11.0, "larg": 15.5, "terminal": 1, "precio": 4070, "stock": false}, {"cod": "CF 552", "linea": "MONCAR", "marca": "Makita", "cat": "Amoladoras", "desc": "CB 459 AMOLADORA GA 4530 720W", "dims": "6x9x13", "esp": 6.0, "anch": 9.0, "larg": 13.0, "terminal": 13, "precio": 3050, "stock": true}, {"cod": "CF 556", "linea": "MONCAR", "marca": "Makita", "cat": "Otros", "desc": "(CB325)AMOL4 1/2 9553/54/55/56/57-MARTILLO HR2230/2300/2450/2460/2470/2800/2810/2811", "dims": "5x11x16", "esp": 5.0, "anch": 11.0, "larg": 16.0, "terminal": 13, "precio": 4070, "stock": true}, {"cod": "CF 557", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Otros", "desc": "KR500/510/532/ BH100/150/200/300/GL400", "dims": "6x7x14", "esp": 6.0, "anch": 7.0, "larg": 14.0, "terminal": 7, "precio": 2530, "stock": true}, {"cod": "CF 558", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Taladros", "desc": "7935/30 TALADRO", "dims": "6x6x16", "esp": 6.0, "anch": 6.0, "larg": 16.0, "terminal": null, "precio": 3540, "stock": true}, {"cod": "CF 559", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Otros", "desc": "BV 1400 SOPLADOR", "dims": "6x9x18", "esp": 6.0, "anch": 9.0, "larg": 18.0, "terminal": 8, "precio": 4280, "stock": false}, {"cod": "CF 560", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Otros", "desc": "", "dims": "4.9x9.5x13", "esp": 4.9, "anch": 9.5, "larg": 13.0, "terminal": null, "precio": 5300, "stock": false}, {"cod": "CF 585", "linea": "MONCAR", "marca": "Adiabatic", "cat": "Equipos de Pintura", "desc": "EQUIPO DE PINTURA", "dims": "9x9x20", "esp": 9.0, "anch": 9.0, "larg": 20.0, "terminal": 10, "precio": 6050, "stock": true}, {"cod": "CF 586", "linea": "MONCAR", "marca": "Argentec", "cat": "Taladros", "desc": "TALADROS MINI 8 Y 10 Nº 210/213/210E/213E/213B", "dims": "5.60x5.60x16.00", "esp": 5.6, "anch": 5.6, "larg": 16.0, "terminal": 10, "precio": 2780, "stock": true}, {"cod": "CF 587", "linea": "MONCAR", "marca": "Argentec", "cat": "Lijadoras", "desc": "AMOL 7¨LIJADORA CIRCULAR 7E / LG 180 C/AVISO DE DESGASTE", "dims": "6x13.8x22", "esp": 6.0, "anch": 13.8, "larg": 22.0, "terminal": null, "precio": 5420, "stock": true}, {"cod": "CF 588", "linea": "MONCAR", "marca": "Argentec", "cat": "Amoladoras", "desc": "AMOLADORA 5¨MOD 1385/6WS 14-125 CE INTERRUPTOR LATERAL CON AVISO DESGASTE", "dims": "5x10x18", "esp": 5.0, "anch": 10.0, "larg": 18.0, "terminal": 13, "precio": 4280, "stock": true}, {"cod": "CF 589", "linea": "MONCAR", "marca": "Argentec", "cat": "Lijadoras", "desc": "LIJADORAS - PULIDORAS LIXA", "dims": "6.00x9.00x25.00", "esp": 6.0, "anch": 9.0, "larg": 25.0, "terminal": 1, "precio": 3760, "stock": true}, {"cod": "CF 590", "linea": "MONCAR", "marca": "Adiabatic", "cat": "Equipos de Pintura", "desc": "EQUIPO DE PINTURA", "dims": "6.00x9.00x20.00", "esp": 6.0, "anch": 9.0, "larg": 20.0, "terminal": 10, "precio": 3540, "stock": true}, {"cod": "CF 591", "linea": "MONCAR", "marca": "Argentec", "cat": "Taladros", "desc": "TALADROS MARK- NIG- NTX- LO- LV", "dims": "6.00x9.00x20.00", "esp": 6.0, "anch": 9.0, "larg": 20.0, "terminal": 10, "precio": 3540, "stock": true}, {"cod": "CF 600", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Sierras", "desc": "SIERRA CIRCULAR 7359/7308", "dims": "6.00x9.00x17.00", "esp": 6.0, "anch": 9.0, "larg": 17.0, "terminal": null, "precio": 5060, "stock": true}, {"cod": "CF 602", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Amoladoras", "desc": "AMOLADORA DE 4\" CON AVISO DE DESGASTE", "dims": "6.00x8.15x15.00", "esp": 6.0, "anch": 8.15, "larg": 15.0, "terminal": 9, "precio": 3540, "stock": true}, {"cod": "CF 603", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Lijadoras", "desc": "PULIDORA MOD. 6138- 40", "dims": "7.00x10.50x17.00", "esp": 7.0, "anch": 10.5, "larg": 17.0, "terminal": 10, "precio": 3760, "stock": false}, {"cod": "CF 604", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Otros", "desc": "KG 2000/KG 2001 (CON AVISO DE DESGASTE)", "dims": "6.30x16.00x22.00", "esp": 6.3, "anch": 16.0, "larg": 22.0, "terminal": 15, "precio": 5640, "stock": true}, {"cod": "CF 605", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Otros", "desc": "ROTOPERCUTOR P 8020 CON AVISO DE DESGASTE", "dims": "6.00x8.00x17.00", "esp": 6.0, "anch": 8.0, "larg": 17.0, "terminal": 9, "precio": 4270, "stock": false}, {"cod": "CF 606", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Amoladoras", "desc": "AMOLADORA DE 4\" 1/2- KG 10 / KG 11 CON AVISO DE DESGASTE", "dims": "6.30x8.00x14.00", "esp": 6.3, "anch": 8.0, "larg": 14.0, "terminal": 9, "precio": 3540, "stock": false}, {"cod": "CF 608", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Otros", "desc": "AMOLADOR DE 4 1/2\" - KG 62 / KG 65", "dims": "6.50x8.00x17.00", "esp": 6.5, "anch": 8.0, "larg": 17.0, "terminal": 13, "precio": 3540, "stock": true}, {"cod": "CF 609", "linea": "MONCAR", "marca": "Bosch", "cat": "Otros", "desc": "CON AVISO DE DESGASTE", "dims": "6.3x12.3x19", "esp": 6.3, "anch": 12.3, "larg": 19.0, "terminal": 9, "precio": 5060, "stock": true}, {"cod": "CF 610", "linea": "MONCAR", "marca": "Bosch", "cat": "Otros", "desc": "MARTILLO MOD. 11304 CON AVISO DE DESGASTE", "dims": "6.30x16.00x22.00", "esp": 6.3, "anch": 16.0, "larg": 22.0, "terminal": 15, "precio": 5640, "stock": true}, {"cod": "CF 611", "linea": "MONCAR", "marca": "Bosch", "cat": "Amoladoras", "desc": "AMOL. 5\" -GWS 10-125/GWS 11-125CI/GWS 14-125/14-125INOX/GWS 15-125 (C. AVISO)", "dims": "5.00x10.00x18.00", "esp": 5.0, "anch": 10.0, "larg": 18.0, "terminal": 13, "precio": 4280, "stock": true}, {"cod": "CF 612", "linea": "MONCAR", "marca": "Bosch", "cat": "Amoladoras", "desc": "AMOLADORA DE 4 1/2 MODELO NUEVO (CON AVISO)", "dims": "6.30x8.00x13", "esp": 6.3, "anch": 8.0, "larg": 13.0, "terminal": 13, "precio": 4070, "stock": true}, {"cod": "CF 613", "linea": "MONCAR", "marca": "Bosch", "cat": "Otros", "desc": "CON AVISO DE DESGASTE", "dims": "6.3x12.45x22", "esp": 6.3, "anch": 12.45, "larg": 22.0, "terminal": 15, "precio": 5730, "stock": true}, {"cod": "CF 614", "linea": "MONCAR", "marca": "Bosch", "cat": "Amoladoras", "desc": "AMOLADORA MOD. 1793", "dims": "6x10x18", "esp": 6.0, "anch": 10.0, "larg": 18.0, "terminal": 13, "precio": 4070, "stock": true}, {"cod": "CF 615", "linea": "MONCAR", "marca": "Bosch", "cat": "Otros", "desc": "ROTOPERCUTOR", "dims": "5x8x15", "esp": 5.0, "anch": 8.0, "larg": 15.0, "terminal": 14, "precio": 3540, "stock": true}, {"cod": "CF 616", "linea": "MONCAR", "marca": "Bosch", "cat": "Taladros", "desc": "TALADRO HOBBISTA", "dims": "5.00x8.00x17.00", "esp": 5.0, "anch": 8.0, "larg": 17.0, "terminal": 3, "precio": 3540, "stock": true}, {"cod": "CF 617", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "LIJ. BANDA DW 430/ REBAJ. DE COLUM. DW 614 CEP. SW 675-44 3070", "dims": "5.00x8.00x18.00", "esp": 5.0, "anch": 8.0, "larg": 18.0, "terminal": 20, "precio": 3050, "stock": true}, {"cod": "CF 618", "linea": "MONCAR", "marca": "De Walt", "cat": "Sierras", "desc": "SIERRA CIR.DW368/DW358/DW389/DW705/DW352/DW366/DW359", "dims": "6.50x13.00x23.00", "esp": 6.5, "anch": 13.0, "larg": 23.0, "terminal": 10, "precio": 4070, "stock": false}, {"cod": "CF 619", "linea": "MONCAR", "marca": "De Walt", "cat": "Sierras", "desc": "SIERRA CIRC. 7 1/4\" DW 352/ SIERRA VAIVEN DW 304/ PULID. DW 849", "dims": "7.00x10.50x17.00", "esp": 7.0, "anch": 10.5, "larg": 17.0, "terminal": 10, "precio": 6080, "stock": false}, {"cod": "CF 620", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "SENSITIVA DW28700", "dims": "6.5x16x16", "esp": 6.5, "anch": 16.0, "larg": 16.0, "terminal": 1, "precio": 5180, "stock": false}, {"cod": "CF 621", "linea": "MONCAR", "marca": "De Walt", "cat": "Taladros", "desc": "TALADRO ROTOPERCUTOR DW 514/ 523 3067", "dims": "6.00x8.00x19.00", "esp": 6.0, "anch": 8.0, "larg": 19.0, "terminal": 9, "precio": 4070, "stock": false}, {"cod": "CF 622", "linea": "MONCAR", "marca": "De Walt", "cat": "Otros", "desc": "CON AVISO DE DESGASTE LUMINICO", "dims": "6.00x10.00x24.00", "esp": 6.0, "anch": 10.0, "larg": 24.0, "terminal": null, "precio": 4950, "stock": false}, {"cod": "CF 623", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Amoladoras", "desc": "AMOL. 7\"- LIJADORA CIRCULAR 7E / LG 180 CON AVISO DE DESGASTE", "dims": "6.00x13.80x22.00", "esp": 6.0, "anch": 13.8, "larg": 22.0, "terminal": 15, "precio": 5420, "stock": true}, {"cod": "CF 628", "linea": "MONCAR", "marca": "Hitachi", "cat": "Otros", "desc": "DU 10- DUT 10/ 13- VTP 10/ 13- DUV 13- DMV 13- DVR 10/ 13- VTV 10/ 13 A", "dims": "6.50x7.50x13.00", "esp": 6.5, "anch": 7.5, "larg": 13.0, "terminal": 21, "precio": 3860, "stock": false}, {"cod": "CF 629", "linea": "MONCAR", "marca": "Hitachi", "cat": "Otros", "desc": "DL 117", "dims": "6.50x7.50x13.00", "esp": 6.5, "anch": 7.5, "larg": 13.0, "terminal": 20, "precio": 3730, "stock": false}, {"cod": "CF 630", "linea": "MONCAR", "marca": "Hitachi", "cat": "Otros", "desc": "SO 110-SOD 110- VTP 19-VRT 22/ 22 A- DMT 13- VRV 16", "dims": "6.50x7.50x16.00", "esp": 6.5, "anch": 7.5, "larg": 16.0, "terminal": 20, "precio": 3730, "stock": false}, {"cod": "CF 631", "linea": "MONCAR", "marca": "Hitachi", "cat": "Otros", "desc": "LUK- RN/ NUK- RN", "dims": "4.70x8.00x14.00", "esp": 4.7, "anch": 8.0, "larg": 14.0, "terminal": 10, "precio": 3470, "stock": true}, {"cod": "CF 632", "linea": "MONCAR", "marca": "Hitachi", "cat": "Otros", "desc": "C 16- LA 12", "dims": "6.00x6.50x13.00", "esp": 6.0, "anch": 6.5, "larg": 13.0, "terminal": 10, "precio": 3840, "stock": false}, {"cod": "CF 634", "linea": "MONCAR", "marca": "Makita", "cat": "Amoladoras", "desc": "(CB 51)AMOL.ANG9514BH-TAL.6300/6016/8419/8422-LIJADORA BANDA9404-CEPILLO1900B", "dims": "5.00x8.00x11.00", "esp": 5.0, "anch": 8.0, "larg": 11.0, "terminal": 11, "precio": 3280, "stock": true}, {"cod": "CF 635 T10", "linea": "MONCAR", "marca": "Makita", "cat": "Amoladoras", "desc": "Amoladora 4 1/2\" 9501/03/9520NB Router Trimmer 1/4\" 3703", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 2530, "stock": false}, {"cod": "CF 635 T11", "linea": "MONCAR", "marca": "Makita", "cat": "Taladros", "desc": "Sierra Caladora 4304 Taladro Percutor HP1500/10/1620/21/ 2020/51/70/2410/20/30/50", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 2900, "stock": true}, {"cod": "CF 636", "linea": "MONCAR", "marca": "Metabo", "cat": "Sierras", "desc": "088- CALADORA ST 450", "dims": "5.90x5.90x15.00", "esp": 5.9, "anch": 5.9, "larg": 15.0, "terminal": 7, "precio": 2020, "stock": true}, {"cod": "CF 637", "linea": "MONCAR", "marca": "Metabo", "cat": "Taladros", "desc": "149/ 164- LIJ. TAL. BE 720/25 RX2/B800/25- AMOL MFE-5/SH EW125/BA ODS", "dims": "6.30x8.00x18.00", "esp": 6.3, "anch": 8.0, "larg": 18.0, "terminal": 9, "precio": 4270, "stock": false}, {"cod": "CF 638", "linea": "MONCAR", "marca": "Metabo", "cat": "Lijadoras", "desc": "135- CEPILLO HO 882", "dims": "6.30x6.30x17.00", "esp": 6.3, "anch": 6.3, "larg": 17.0, "terminal": 1, "precio": 2260, "stock": true}, {"cod": "CF 639", "linea": "MONCAR", "marca": "Metabo", "cat": "Taladros", "desc": "163- TALADROS T10/ B10/ T13/ SB 613/ SBE 13", "dims": "5.00x8.00x13.00", "esp": 5.0, "anch": 8.0, "larg": 13.0, "terminal": 3, "precio": 3060, "stock": true}, {"cod": "CF 640", "linea": "MONCAR", "marca": "Metabo", "cat": "Otros", "desc": "CON AVISO DE DESGASTE", "dims": "6.00x16.00x20.00", "esp": 6.0, "anch": 16.0, "larg": 20.0, "terminal": 9, "precio": 5370, "stock": true}, {"cod": "CF 642", "linea": "MONCAR", "marca": "Metabo", "cat": "Otros", "desc": "CON AVISO DESGASTE", "dims": "5.00x10.00x17.00", "esp": 5.0, "anch": 10.0, "larg": 17.0, "terminal": 13, "precio": 4280, "stock": true}, {"cod": "CF 643", "linea": "MONCAR", "marca": "Metabo", "cat": "Taladros", "desc": "122/ 288- TALADROS TG 22 S - ETC.", "dims": "5.00x10.00x15.00", "esp": 5.0, "anch": 10.0, "larg": 15.0, "terminal": 10, "precio": 3280, "stock": true}, {"cod": "CF 644", "linea": "MONCAR", "marca": "Metabo", "cat": "Amoladoras", "desc": "177- AMOL. 7\" Y 9\" MOD. 2280/ 1- 21230/ 23180- 2018 Y 2030 2000W", "dims": "6.00x16.00x24.00", "esp": 6.0, "anch": 16.0, "larg": 24.0, "terminal": 8, "precio": 5590, "stock": false}, {"cod": "CF 645", "linea": "MONCAR", "marca": "Peugeot", "cat": "Lijadoras", "desc": "LIJADORA DE BANDA 600 W", "dims": "6.30x6.30x14.00", "esp": 6.3, "anch": 6.3, "larg": 14.0, "terminal": 5, "precio": 2530, "stock": true}, {"cod": "CF 648", "linea": "MONCAR", "marca": "Skil", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2 9002AR", "dims": "6x9x15", "esp": 6.0, "anch": 9.0, "larg": 15.0, "terminal": null, "precio": 2780, "stock": false}, {"cod": "CF 649", "linea": "MONCAR", "marca": "Skil", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2\" 9230", "dims": "5x8x15", "esp": 5.0, "anch": 8.0, "larg": 15.0, "terminal": 2, "precio": 3760, "stock": true}, {"cod": "CF 650", "linea": "MONCAR", "marca": "Skil", "cat": "Amoladoras", "desc": "AMOLADORA 9\" 9980", "dims": "7.9x14.4x18", "esp": 7.9, "anch": 14.4, "larg": 18.0, "terminal": 1, "precio": 5370, "stock": true}, {"cod": "CF 651", "linea": "MONCAR", "marca": "Skil", "cat": "Taladros", "desc": "TALADRO ROTOPERCUTOR 1759 650W", "dims": "6x9x12", "esp": 6.0, "anch": 9.0, "larg": 12.0, "terminal": 20, "precio": 2900, "stock": true}, {"cod": "CF 652", "linea": "MONCAR", "marca": "Skil", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2\" 9002", "dims": "5x8x14.5", "esp": 5.0, "anch": 8.0, "larg": 14.5, "terminal": 13, "precio": 2920, "stock": true}, {"cod": "CF 653", "linea": "MONCAR", "marca": "Skil", "cat": "Amoladoras", "desc": "AMOLADORA 7\" MOD 9651/9652- 80 1800W", "dims": "6.25x15.90x22.00", "esp": 6.25, "anch": 15.9, "larg": 22.0, "terminal": 2, "precio": 5640, "stock": true}, {"cod": "CF 654", "linea": "MONCAR", "marca": "Skil", "cat": "Taladros", "desc": "TALADRO 13MM MOD 6438", "dims": "5.00x8.00x12.00", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 10, "precio": 2260, "stock": true}, {"cod": "CF 655", "linea": "MONCAR", "marca": "Skil", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR 4 1/2\" 115MM MOD 9003 720W", "dims": "6x8.00x18.00", "esp": 6.0, "anch": 8.0, "larg": 18.0, "terminal": 9, "precio": 2780, "stock": true}, {"cod": "CF 656", "linea": "MONCAR", "marca": "Skil", "cat": "Taladros", "desc": "TALADRO CON PERCUTOR 10MM 450W", "dims": "5.00x8.00x17.00", "esp": 5.0, "anch": 8.0, "larg": 17.0, "terminal": 10, "precio": 3540, "stock": true}, {"cod": "CF 657", "linea": "MONCAR", "marca": "Skil", "cat": "Sierras", "desc": "SIERRA CIRCULAR 7 1/4 MOD 5300", "dims": "7.00x10.90x20.00", "esp": 7.0, "anch": 10.9, "larg": 20.0, "terminal": 1, "precio": 5530, "stock": true}, {"cod": "CF 658", "linea": "MONCAR", "marca": "Skil", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR 4 1/2\" 115MM MOD 9004", "dims": "6x9x15", "esp": 6.0, "anch": 9.0, "larg": 15.0, "terminal": 13, "precio": 2780, "stock": true}, {"cod": "CF 659", "linea": "MONCAR", "marca": "Skil", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR 4 1/2\" 115MM MOD 9006", "dims": "6x11x15", "esp": 6.0, "anch": 11.0, "larg": 15.0, "terminal": 13, "precio": 2530, "stock": true}, {"cod": "CF 660", "linea": "MONCAR", "marca": "Skil", "cat": "Sierras", "desc": "SIERRAS MOD. 5150/ 5250", "dims": "6.30x9.50x13.00", "esp": 6.3, "anch": 9.5, "larg": 13.0, "terminal": 13, "precio": 3730, "stock": true}, {"cod": "CF 661", "linea": "MONCAR", "marca": "Skil", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2\" MOD. 9410", "dims": "6.00x7.00x15.00", "esp": 6.0, "anch": 7.0, "larg": 15.0, "terminal": 9, "precio": 3760, "stock": true}, {"cod": "CF 662", "linea": "MONCAR", "marca": "Stayer", "cat": "Amoladoras", "desc": "AMOLADORAS 7\" Y 9\" (MODELO VIEJO)", "dims": "6.00x13.80x22.00", "esp": 6.0, "anch": 13.8, "larg": 22.0, "terminal": 1, "precio": 4800, "stock": false}, {"cod": "CF 663", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Lijadoras", "desc": "LUSTRALIJADORA WP 1300 DISCO 7\"", "dims": "5.75x10.00x14.00", "esp": 5.75, "anch": 10.0, "larg": 14.0, "terminal": 1, "precio": 5310, "stock": true}, {"cod": "CF 664", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Otros", "desc": "KG 915", "dims": "6.30x8.00x13.00", "esp": 6.3, "anch": 8.0, "larg": 13.0, "terminal": 1, "precio": 5310, "stock": true}, {"cod": "CF 665", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR R DE 4 1/2 \"", "dims": "5.00x8.00x12.00", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 2530, "stock": true}, {"cod": "CF 666", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR R DE 4 1/2 \"", "dims": "6.30x8.00x12.00", "esp": 6.3, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 2530, "stock": true}, {"cod": "CF 667", "linea": "MONCAR", "marca": "Bosch", "cat": "Amoladoras", "desc": "AMOLADORA NUEVO MODELO", "dims": "5.00x8.00x19.00", "esp": 5.0, "anch": 8.0, "larg": 19.0, "terminal": 2, "precio": 3760, "stock": true}, {"cod": "CF 668", "linea": "MONCAR", "marca": "Bosch", "cat": "Otros", "desc": "DOWEN PAGGIO 12 V", "dims": "6.00x9.00x27.00", "esp": 6.0, "anch": 9.0, "larg": 27.0, "terminal": 1, "precio": 6300, "stock": true}, {"cod": "CF 669", "linea": "MONCAR", "marca": "Cobreados", "cat": "Otros", "desc": "", "dims": "7.00x7.00x27.00", "esp": 7.0, "anch": 7.0, "larg": 27.0, "terminal": 1, "precio": 5730, "stock": true}, {"cod": "CF 670", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Otros", "desc": "", "dims": "5.00x5.00x27.00", "esp": 5.0, "anch": 5.0, "larg": 27.0, "terminal": 1, "precio": 5730, "stock": true}, {"cod": "CF 671", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR DE 4 1/2 \" G 900", "dims": "6.30x8x15", "esp": 6.3, "anch": 8.0, "larg": 15.0, "terminal": 9, "precio": 3640, "stock": true}, {"cod": "CF 672", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Lijadoras", "desc": "LUSTRALIJADORA WP 1500", "dims": "7x11x20", "esp": 7.0, "anch": 11.0, "larg": 20.0, "terminal": 7, "precio": 3050, "stock": true}, {"cod": "CF 673", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Otros", "desc": "ROTOMARTILLO KD 1001", "dims": "6x8x13", "esp": 6.0, "anch": 8.0, "larg": 13.0, "terminal": 1, "precio": 3050, "stock": true}, {"cod": "CF 674", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Amoladoras", "desc": "AMOLADORA G 720 MOD. NUEVO", "dims": "5x8x12", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 2530, "stock": true}, {"cod": "CF 675", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Otros", "desc": "MARTILLO KD 1250", "dims": "6x11x18", "esp": 6.0, "anch": 11.0, "larg": 18.0, "terminal": null, "precio": 3760, "stock": true}, {"cod": "CF 701", "linea": "MONCAR", "marca": "Gamma", "cat": "Amoladoras", "desc": "AMOLADORAS 41/2 ¨", "dims": "5.00x8.00x12.00", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 2530, "stock": true}, {"cod": "CF 702", "linea": "MONCAR", "marca": "Gamma", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2¨", "dims": "5.00x8.00x12.00", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 10, "precio": 2260, "stock": true}, {"cod": "CF 703", "linea": "MONCAR", "marca": "Gamma", "cat": "Amoladoras", "desc": "AMOLADORA 7¨Y 9¨", "dims": "6.50x13.50x18.00", "esp": 6.5, "anch": 13.5, "larg": 18.0, "terminal": 2, "precio": 5640, "stock": true}, {"cod": "CF 704", "linea": "MONCAR", "marca": "Gamma", "cat": "Taladros", "desc": "TALADROS", "dims": "5.00x8.00x15.00", "esp": 5.0, "anch": 8.0, "larg": 15.0, "terminal": 10, "precio": 3540, "stock": true}, {"cod": "CF 705", "linea": "MONCAR", "marca": "Gamma", "cat": "Lijadoras", "desc": "CEPILLO ELECTRICO ART HG006", "dims": "6.00x10.00x15.00", "esp": 6.0, "anch": 10.0, "larg": 15.0, "terminal": 1, "precio": 5310, "stock": true}, {"cod": "CF 706", "linea": "MONCAR", "marca": "Gamma", "cat": "Taladros", "desc": "TALADRO ELECTRICO CON PERCUTOR 13MM ART HG002", "dims": "6.00x9.00x12.00", "esp": 6.0, "anch": 9.0, "larg": 12.0, "terminal": 10, "precio": 2260, "stock": true}, {"cod": "CF 707", "linea": "MONCAR", "marca": "Gamma", "cat": "Lijadoras", "desc": "LIJADORA DE BANDA ART HG009 950W", "dims": "6.00x10.00x16.00", "esp": 6.0, "anch": 10.0, "larg": 16.0, "terminal": 1, "precio": 4650, "stock": true}, {"cod": "CF 708", "linea": "MONCAR", "marca": "Gamma", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR 7\" ART HG004", "dims": "7.00x14.00x21.00", "esp": 7.0, "anch": 14.0, "larg": 21.0, "terminal": 1, "precio": 4800, "stock": true}, {"cod": "CF 709", "linea": "MONCAR", "marca": "Gamma", "cat": "Otros", "desc": "CORTADORA SENSITIVA 14\" ART HG010", "dims": "7.30x13.30x17.00", "esp": 7.3, "anch": 13.3, "larg": 17.0, "terminal": 2, "precio": 3640, "stock": true}, {"cod": "CF 710", "linea": "MONCAR", "marca": "Gamma", "cat": "Lijadoras", "desc": "LUSTRALIJADORA ART HG010", "dims": "6x10.00x14.00", "esp": 6.0, "anch": 10.0, "larg": 14.0, "terminal": 10, "precio": 3280, "stock": true}, {"cod": "CF 711", "linea": "MONCAR", "marca": "Gamma", "cat": "Otros", "desc": "MARTILLO HG 021", "dims": "7x11x17", "esp": 7.0, "anch": 11.0, "larg": 17.0, "terminal": 1, "precio": 3370, "stock": true}, {"cod": "CF 712", "linea": "MONCAR", "marca": "Gamma", "cat": "Amoladoras", "desc": "AMOL.ANGULAR 115 MOD.G1910AR", "dims": "5x8x15", "esp": 5.0, "anch": 8.0, "larg": 15.0, "terminal": 2, "precio": 3860, "stock": false}, {"cod": "CF 730", "linea": "MONCAR", "marca": "Einhell", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2 TC AG115/750 WATT", "dims": "6x9x13", "esp": 6.0, "anch": 9.0, "larg": 13.0, "terminal": 13, "precio": 4070, "stock": false}, {"cod": "CF 731", "linea": "MONCAR", "marca": "Einhell", "cat": "Sierras", "desc": "SIERRA DE BANCO TC-TS 2025", "dims": "6.3x16x22", "esp": 6.3, "anch": 16.0, "larg": 22.0, "terminal": 2, "precio": 5370, "stock": false}, {"cod": "CF 750", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR 115 MM MOD AA 115 H 710 W", "dims": "6.00x9.00x17.00", "esp": 6.0, "anch": 9.0, "larg": 17.0, "terminal": 1, "precio": 3760, "stock": true}, {"cod": "CF 751", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR 115 MM MOD AA 115 SP 900 W", "dims": "6.00x9.00x17.00", "esp": 6.0, "anch": 9.0, "larg": 17.0, "terminal": 14, "precio": 2780, "stock": true}, {"cod": "CF 752", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Amoladoras", "desc": "AMOL.180 MOD.AA SP/AA 230 SP 1800W", "dims": "7.00x14.00x16.00", "esp": 7.0, "anch": 14.0, "larg": 16.0, "terminal": 1, "precio": 4800, "stock": true}, {"cod": "CF 753", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR 230 MM MOD AA 230 P 2200 W", "dims": "7.90x14.40x18.00", "esp": 7.9, "anch": 14.4, "larg": 18.0, "terminal": 1, "precio": 5370, "stock": true}, {"cod": "CF 754", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Lijadoras", "desc": "LUSTRALIJADORA MOD LA 180 SSP 1300 W", "dims": "5.90x9.90x14.40", "esp": 5.9, "anch": 9.9, "larg": 14.4, "terminal": 1, "precio": 5310, "stock": true}, {"cod": "CF 755", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Taladros", "desc": "TALADRO PERCUTOR 10MM MOD TP101SP 900W", "dims": "6.00x9.00x17.00", "esp": 6.0, "anch": 9.0, "larg": 17.0, "terminal": 10, "precio": 2830, "stock": true}, {"cod": "CF 756", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Taladros", "desc": "TALADRO PERCUTOR 13MM MOD TP131P 1050W", "dims": "6.00x11.00x14.50", "esp": 6.0, "anch": 11.0, "larg": 14.5, "terminal": 16, "precio": 4250, "stock": true}, {"cod": "CF 757", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Taladros", "desc": "TALADRO 16MM ALTO TORQUE MOD TP161P 1050W", "dims": "5.00x11.00x15.50", "esp": 5.0, "anch": 11.0, "larg": 15.5, "terminal": 1, "precio": 4030, "stock": true}, {"cod": "CF 758", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Otros", "desc": "CEPILLADORA MANUAL MOD CM822SP 1100W", "dims": "6.25x11.00x20.00", "esp": 6.25, "anch": 11.0, "larg": 20.0, "terminal": 13, "precio": 5060, "stock": false}, {"cod": "CF 759", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Sierras", "desc": "SIERRA CALADORA MOD SC80SP 580W DOBLE GUIA", "dims": "5.00x8.00x12.00", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 2530, "stock": true}, {"cod": "CF 760", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Sierras", "desc": "SIERRA CIRCULAR 190MM MOD SC190H 1300W", "dims": "5.00x11.00x15.00", "esp": 5.0, "anch": 11.0, "larg": 15.0, "terminal": 1, "precio": 4070, "stock": true}, {"cod": "CF 761", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Sierras", "desc": "SIERRA CIRCULAR 190MM MOD SC190SP 1500W", "dims": "6.50x13.00x17", "esp": 6.5, "anch": 13.0, "larg": 17.0, "terminal": 1, "precio": 4550, "stock": true}, {"cod": "CF 762", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Otros", "desc": "REBAJADORA MANUAL MOD RM12P 1400W", "dims": "6x7x12", "esp": 6.0, "anch": 7.0, "larg": 12.0, "terminal": 16, "precio": 2780, "stock": true}, {"cod": "CF 763", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Sierras", "desc": "SIERRA SENSITIVA MOD SS350SP 2000W", "dims": "7.00x17.00x17.00", "esp": 7.0, "anch": 17.0, "larg": 17.0, "terminal": 1, "precio": 5420, "stock": true}, {"cod": "CF 764", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR 115 MM MOD AA 15H", "dims": "5x8x14.5", "esp": 5.0, "anch": 8.0, "larg": 14.5, "terminal": 13, "precio": 2920, "stock": true}, {"cod": "CF 765", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Otros", "desc": "", "dims": "5x9x12", "esp": 5.0, "anch": 9.0, "larg": 12.0, "terminal": 10, "precio": 2530, "stock": true}, {"cod": "CF 766", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR 115/125 MM AA 125 S9G", "dims": "6x10x12.5", "esp": 6.0, "anch": 10.0, "larg": 12.5, "terminal": 1, "precio": 3050, "stock": true}, {"cod": "CF 767", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Otros", "desc": "", "dims": "5x11x15.5", "esp": 5.0, "anch": 11.0, "larg": 15.5, "terminal": 1, "precio": 4070, "stock": true}, {"cod": "CF 768", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR 230 MM AA 230P", "dims": "8x15x18", "esp": 8.0, "anch": 15.0, "larg": 18.0, "terminal": 7, "precio": 5300, "stock": true}, {"cod": "CF 769", "linea": "MONCAR", "marca": "Dowen Paggio", "cat": "Otros", "desc": "ROTOMARTILLO SDS PLUS RM 30 P", "dims": "6.3x8x12", "esp": 6.3, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 2530, "stock": true}, {"cod": "CF 850", "linea": "MONCAR", "marca": "Bta", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2\" VARIOS MODELOS", "dims": "5.00x8.00x12.00", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 2530, "stock": true}, {"cod": "CF 851", "linea": "MONCAR", "marca": "Bta", "cat": "Amoladoras", "desc": "AMOLADORA  4 1/2¨ VARIOS MODELOS", "dims": "5.00x8.00x12.00", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 10, "precio": 2260, "stock": true}, {"cod": "CF 852", "linea": "MONCAR", "marca": "Bta", "cat": "Amoladoras", "desc": "AMOLADORA DE 7¨Y 9¨", "dims": "6.50x13.50x18.00", "esp": 6.5, "anch": 13.5, "larg": 18.0, "terminal": 2, "precio": 5640, "stock": true}, {"cod": "CF 853", "linea": "MONCAR", "marca": "Bta", "cat": "Taladros", "desc": "TALADRO", "dims": "4.75x7.90x15.00", "esp": 4.75, "anch": 7.9, "larg": 15.0, "terminal": 10, "precio": 3540, "stock": true}, {"cod": "CF 880", "linea": "MONCAR", "marca": "Neo", "cat": "Amoladoras", "desc": "AMOLADORA 7 Y 9\" MOD AA 919- AA927 900W", "dims": "7.00x19.00x14.00", "esp": 7.0, "anch": 19.0, "larg": 14.0, "terminal": 1, "precio": 5590, "stock": true}, {"cod": "CF 881", "linea": "MONCAR", "marca": "Neo", "cat": "Taladros", "desc": "TALADRO 13MM PERCUTOR MOD TP813 1050W", "dims": "5.00x11.00x15.00", "esp": 5.0, "anch": 11.0, "larg": 15.0, "terminal": 13, "precio": 4070, "stock": true}, {"cod": "CF 882", "linea": "MONCAR", "marca": "Neo", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2\" MOD AA915 900W", "dims": "6.40x7.80x13.00", "esp": 6.4, "anch": 7.8, "larg": 13.0, "terminal": 1, "precio": 2530, "stock": true}, {"cod": "CF 883", "linea": "MONCAR", "marca": "Neo", "cat": "Otros", "desc": "ROTOMARTILLO 3 FUNCIONES MOD RM821 650W", "dims": "6.40x9.90x18.00", "esp": 6.4, "anch": 9.9, "larg": 18.0, "terminal": 1, "precio": 3410, "stock": false}, {"cod": "CF 884", "linea": "MONCAR", "marca": "Neo", "cat": "Otros", "desc": "MARTILLO DEMOLEDOR RM 825", "dims": "2026-10-06 00:00:00x15.95x19.00", "esp": null, "anch": 15.95, "larg": 19.0, "terminal": 9, "precio": 5640, "stock": true}, {"cod": "CF 885", "linea": "MONCAR", "marca": "Neo", "cat": "Otros", "desc": "MARTILLO ELECTRONEUMATICO MOD RM 708 850W", "dims": "6.25x15.90x22.00", "esp": 6.25, "anch": 15.9, "larg": 22.0, "terminal": 2, "precio": 5640, "stock": true}, {"cod": "CF 886", "linea": "MONCAR", "marca": "Neo", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2\" AA915/1015", "dims": "6.3x8x12", "esp": 6.3, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 2660, "stock": false}, {"cod": "CF 887", "linea": "MONCAR", "marca": "Neo", "cat": "Amoladoras", "desc": "AMOLADORA 7\" AA928 (CON AVISO DE DESGASTE)", "dims": "6.3x16x22", "esp": 6.3, "anch": 16.0, "larg": 22.0, "terminal": 2, "precio": 5640, "stock": false}, {"cod": "CF 888", "linea": "MONCAR", "marca": "Neo", "cat": "Lijadoras", "desc": "LIJADORA DE BANDA LB 721", "dims": "6.3x8x12", "esp": 6.3, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 2660, "stock": false}, {"cod": "CF 889", "linea": "MONCAR", "marca": "Neo", "cat": "Taladros", "desc": "LIJADORA ORBITAL L0712", "dims": "5x8x12", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 5170, "stock": false}, {"cod": "CF 900", "linea": "MONCAR", "marca": "Experto", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2\" 1100W", "dims": "6x10x12.5", "esp": 6.0, "anch": 10.0, "larg": 12.5, "terminal": 1, "precio": 5300, "stock": false}, {"cod": "CF 917", "linea": "MONCAR", "marca": "Bosch", "cat": "Amoladoras", "desc": "AMOL.4 1/2 MOD 1394-1375 -GWS 7-115 (CON AVISO)", "dims": "5x8x15", "esp": 5.0, "anch": 8.0, "larg": 15.0, "terminal": 2, "precio": 4030, "stock": true}, {"cod": "CF 950", "linea": "MONCAR", "marca": "Gladiator", "cat": "Amoladoras", "desc": "AMOLADORA ANGULAR MOD AA215 640W", "dims": "5x8.00x12.00", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 2530, "stock": true}, {"cod": "CF 951", "linea": "MONCAR", "marca": "Gladiator", "cat": "Amoladoras", "desc": "AMOLADORA 7¨Y 9¨", "dims": "8.00x14.00x17.00", "esp": 8.0, "anch": 14.0, "larg": 17.0, "terminal": 1, "precio": 5370, "stock": true}, {"cod": "CF 952", "linea": "MONCAR", "marca": "Gladiator", "cat": "Taladros", "desc": "TALADRO PERCUTOR 13MM MOD TP513 800W", "dims": "5.90x8.90x15.00", "esp": 5.9, "anch": 8.9, "larg": 15.0, "terminal": 1, "precio": 3760, "stock": true}, {"cod": "CF 953", "linea": "MONCAR", "marca": "Gladiator", "cat": "Amoladoras", "desc": "AMOL. ANGULAR MOD AA518 180MM 2200W/ AA523 230MM 2200W", "dims": "7.90x14.40x17.50", "esp": 7.9, "anch": 14.4, "larg": 17.5, "terminal": 1, "precio": 5370, "stock": true}, {"cod": "CF 954", "linea": "MONCAR", "marca": "Gladiator", "cat": "Sierras", "desc": "SIERRA CIRCULAR 7 1/4\" MOD 307 1200W", "dims": "5.00x11.00x15.00", "esp": 5.0, "anch": 11.0, "larg": 15.0, "terminal": 13, "precio": 4070, "stock": false}, {"cod": "CF 955", "linea": "MONCAR", "marca": "Gladiator", "cat": "Otros", "desc": "", "dims": "5x8x13", "esp": 5.0, "anch": 8.0, "larg": 13.0, "terminal": 1, "precio": 2530, "stock": true}, {"cod": "CF 970", "linea": "MONCAR", "marca": "Milwaukee", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2\"", "dims": "6x9x17", "esp": 6.0, "anch": 9.0, "larg": 17.0, "terminal": 14, "precio": 3410, "stock": false}, {"cod": "CF 971", "linea": "MONCAR", "marca": "Milwaukee", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2\"", "dims": "5x13x15.5", "esp": 5.0, "anch": 13.0, "larg": 15.5, "terminal": null, "precio": 3660, "stock": true}, {"cod": "CF 972", "linea": "MONCAR", "marca": "Milwaukee", "cat": "Amoladoras", "desc": "AMOLADORA 7\" Y 9\"", "dims": "6.3x16x22", "esp": 6.3, "anch": 16.0, "larg": 22.0, "terminal": 2, "precio": 4650, "stock": true}, {"cod": "CF 990", "linea": "MONCAR", "marca": "Aeg", "cat": "Amoladoras", "desc": "AMOLADORA 4 1/2", "dims": "5x8x12", "esp": 5.0, "anch": 8.0, "larg": 12.0, "terminal": 1, "precio": 2530, "stock": false}, {"cod": "CF601", "linea": "MONCAR", "marca": "Black Y Decker", "cat": "Amoladoras", "desc": "AMOLADORAS DE 7\" - LIJADORAS Y PULIDORAS", "dims": "6.00x8.00x16.00", "esp": 6.0, "anch": 8.0, "larg": 16.0, "terminal": 3, "precio": 2780, "stock": false}, {"cod": "RM 022", "linea": "RMH", "marca": "RMH", "cat": "Hidrolavadoras", "desc": "Llave encendido hidrolavadora", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 4400, "stock": true}, {"cod": "RM 023", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora de banco", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 4015, "stock": true}, {"cod": "RM 026", "linea": "RMH", "marca": "RMH", "cat": "Lijadoras", "desc": "Lijadoras y cepillos", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 4015, "stock": true}, {"cod": "RM 029", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora angular 180mm", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 9350, "stock": true}, {"cod": "RM 030", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora angular", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 10500, "stock": false}, {"cod": "RM 032", "linea": "RMH", "marca": "RMH", "cat": "Taladros", "desc": "Taladro 13mm", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 12100, "stock": true}, {"cod": "RM 033", "linea": "RMH", "marca": "RMH", "cat": "Taladros", "desc": "Taladro 13mm Stingray/Metabo", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 12760, "stock": true}, {"cod": "RM 034", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora 650W", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 7480, "stock": true}, {"cod": "RM 035", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora recta 4 1/2", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 4235, "stock": true}, {"cod": "RM 036", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora con arranque progresivo", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 8140, "stock": true}, {"cod": "RM 040", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora Makita 9527/9524", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 4015, "stock": true}, {"cod": "RM 041", "linea": "RMH", "marca": "RMH", "cat": "Otros", "desc": "Palanca interruptor", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 4015, "stock": true}, {"cod": "RM 101", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora gatillo grande", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 19360, "stock": true}, {"cod": "RM 102", "linea": "RMH", "marca": "RMH", "cat": "Otros", "desc": "Gatillo Makita GA9020/7020", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 19360, "stock": true}, {"cod": "RM 103", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora angular grande", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 9500, "stock": true}, {"cod": "RM 106", "linea": "RMH", "marca": "RMH", "cat": "Otros", "desc": "Martillo HM0810 Makita", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 13200, "stock": true}, {"cod": "RM 111", "linea": "RMH", "marca": "RMH", "cat": "Otros", "desc": "Gatillo atornillador inalambrico Daewoo", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 19360, "stock": true}, {"cod": "RM 400", "linea": "RMH", "marca": "RMH", "cat": "Taladros", "desc": "Taladro Dewalt D25003", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 20570, "stock": true}, {"cod": "RM 401", "linea": "RMH", "marca": "RMH", "cat": "Taladros", "desc": "Taladro Makita Hr2450", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 16335, "stock": true}, {"cod": "RM 402", "linea": "RMH", "marca": "RMH", "cat": "Taladros", "desc": "Taladro", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 16335, "stock": true}, {"cod": "RM 403", "linea": "RMH", "marca": "RMH", "cat": "Taladros", "desc": "Interruptor taladro Dowen Paggio", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 19360, "stock": true}, {"cod": "RM 404", "linea": "RMH", "marca": "RMH", "cat": "Taladros", "desc": "Taladro Eléctrico", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 15400, "stock": true}, {"cod": "RM 409", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora Bosch 4 1/2 GWS8-125", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 4400, "stock": true}, {"cod": "RM 413", "linea": "RMH", "marca": "RMH", "cat": "Taladros", "desc": "Taladros varios", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 15400, "stock": true}, {"cod": "RM 414", "linea": "RMH", "marca": "RMH", "cat": "Taladros", "desc": "Taladro Dowen Paggio/Metabo", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 15400, "stock": true}, {"cod": "RM 416", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora ingletadora DeWalt", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 18370, "stock": true}, {"cod": "RM 417", "linea": "RMH", "marca": "RMH", "cat": "Taladros", "desc": "Taladro Bosch GSB 16RE", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 18150, "stock": true}, {"cod": "RM 418", "linea": "RMH", "marca": "RMH", "cat": "Otros", "desc": "Martillo rotatorio GBH2-26DRE", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 18150, "stock": false}, {"cod": "RM 420", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora angular 180mm Metabo", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 18500, "stock": false}, {"cod": "RM 421", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Interruptor amoladora", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 10120, "stock": true}, {"cod": "RM 424", "linea": "RMH", "marca": "RMH", "cat": "Otros", "desc": "Interruptor especial", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 39600, "stock": true}, {"cod": "RM 425", "linea": "RMH", "marca": "RMH", "cat": "Lijadoras", "desc": "Pulidora", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 18150, "stock": true}, {"cod": "RM 505", "linea": "RMH", "marca": "RMH", "cat": "Otros", "desc": "Pulsador aparejo electrico", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 7260, "stock": true}, {"cod": "RM 506", "linea": "RMH", "marca": "RMH", "cat": "Otros", "desc": "Llave 2 puntos", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 5170, "stock": true}, {"cod": "RM 714", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora Bosch 7 GWS21", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 18370, "stock": true}, {"cod": "RM 715", "linea": "RMH", "marca": "RMH", "cat": "Sierras", "desc": "Sierra circular de banco DW7950", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 46200, "stock": true}, {"cod": "RM 716", "linea": "RMH", "marca": "RMH", "cat": "Lijadoras", "desc": "Cepillo y sierras circulares", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 6930, "stock": true}, {"cod": "RM 717", "linea": "RMH", "marca": "RMH", "cat": "Amoladoras", "desc": "Amoladora B&D angular", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 31460, "stock": true}, {"cod": "RM 718", "linea": "RMH", "marca": "RMH", "cat": "Sierras", "desc": "Sierra circular banco DWE7470", "dims": "", "esp": null, "anch": null, "larg": null, "terminal": null, "precio": 41800, "stock": true}];
+const CONTACTO_WA = '5491136267009';
+const CONTACTO_EMAIL = 'contacto.carbonkey@gmail.com';
+
+const SVG_MC=`<svg width="50" height="50" viewBox="0 0 50 50" fill="none"><circle cx="25" cy="25" r="17" fill="none" stroke="#FF6B00" stroke-width="1.8" opacity=".2"/><circle cx="25" cy="25" r="9" fill="none" stroke="#FF6B00" stroke-width="1.8" opacity=".45"/><circle cx="25" cy="25" r="3" fill="#FF6B00" opacity=".8"/><line x1="9" y1="25" x2="16" y2="25" stroke="#FF6B00" stroke-width="1.8" stroke-linecap="round" opacity=".4"/><line x1="34" y1="25" x2="41" y2="25" stroke="#FF6B00" stroke-width="1.8" stroke-linecap="round" opacity=".4"/><line x1="25" y1="9" x2="25" y2="16" stroke="#FF6B00" stroke-width="1.8" stroke-linecap="round" opacity=".4"/><line x1="25" y1="34" x2="25" y2="41" stroke="#FF6B00" stroke-width="1.8" stroke-linecap="round" opacity=".4"/></svg>`;
+const SVG_RMH=`<svg width="50" height="50" viewBox="0 0 50 50" fill="none"><rect x="9" y="15" width="32" height="20" rx="4" stroke="#FF6B00" stroke-width="1.8" opacity=".3" fill="none"/><rect x="15" y="20" width="20" height="10" rx="2" fill="#FF6B00" opacity=".1"/><circle cx="25" cy="25" r="3" fill="#FF6B00" opacity=".7"/><line x1="18" y1="25" x2="22" y2="25" stroke="#FF6B00" stroke-width="1.8" stroke-linecap="round" opacity=".5"/><line x1="28" y1="25" x2="32" y2="25" stroke="#FF6B00" stroke-width="1.8" stroke-linecap="round" opacity=".5"/></svg>`;
+
+let cart = JSON.parse(localStorage.getItem('moncar_cart')||'[]');
+let filtroLinea='';
+
+function fmt(n){ return n ? '$'+Math.round(n).toLocaleString('es-AR') : 'Consultar'; }
+
+function setNavActive(id){
+  ['inicio','productos','nosotros'].forEach(n=>document.getElementById('nav-'+n).classList.toggle('active',n===id));
+}
+function irAInicio(){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-inicio').classList.add('active');
+  setNavActive('inicio'); window.scrollTo(0,0);
+}
+function irAProductos(cat,marca){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-productos').classList.add('active');
+  setNavActive('productos');
+  document.querySelectorAll('#sb-cats input,#sb-marcas input').forEach(cb=>cb.checked=false);
+  if(cat){
+    const cb=document.querySelector(`#sb-cats input[value="${cat}"]`);
+    if(cb) cb.checked=true;
+  }
+  if(marca){
+    const cb=document.querySelector(`#sb-marcas input[value="${marca}"]`);
+    if(cb) cb.checked=true;
+  }
+  filtrar(); window.scrollTo(0,0);
+}
+function irANosotros(){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-nosotros').classList.add('active');
+  setNavActive('nosotros'); window.scrollTo(0,0);
+}
+function irACat(c){ irAProductos(c,null); }
+function irAMarca(m){ irAProductos(null,m); }
+
+function setLinea(btn){
+  document.querySelectorAll('.sb-linea-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  filtroLinea=btn.dataset.val;
+  filtrar();
+}
+
+function filtrar(){
+  const q=document.getElementById('search').value.toLowerCase().trim();
+  const soloStock=document.getElementById('solo-stock').checked;
+  document.getElementById('clear-btn').style.display=q?'block':'none';
+
+  const selCats=[...document.querySelectorAll('#sb-cats input:checked')].map(c=>c.value);
+  const selMarcas=[...document.querySelectorAll('#sb-marcas input:checked')].map(c=>c.value);
+  const pMin=parseFloat(document.getElementById('precio-min').value)||0;
+  const pMax=parseFloat(document.getElementById('precio-max').value)||Infinity;
+  const filEsp=document.getElementById('fil-esp').value;
+  const filAnch=document.getElementById('fil-anch').value;
+  const filLarg=document.getElementById('fil-larg').value;
+  const filTerm=document.getElementById('fil-term').value;
+
+  const af=document.getElementById('active-filters');
+  const tags=[];
+  if(filtroLinea) tags.push(`<div class="active-tag" onclick="document.querySelector('.sb-linea-btn[data-val=\'\']').click()">Linea: ${filtroLinea} ✕</div>`);
+  selCats.forEach(c=>tags.push(`<div class="active-tag" onclick="uncheckCat('${c}')">📂 ${c} ✕</div>`));
+  selMarcas.forEach(m=>tags.push(`<div class="active-tag" onclick="uncheckMarca('${m}')">🏷️ ${m} ✕</div>`));
+  if(pMin>0||pMax<Infinity) tags.push(`<div class="active-tag" onclick="limpiarPrecio()">Precio ✕</div>`);
+  af.innerHTML=tags.join('');
+  af.style.display=tags.length?'flex':'none';
+
+  const visibles=PRODUCTOS.filter(p=>{
+    if(filtroLinea&&p.linea!==filtroLinea) return false;
+    if(soloStock&&!p.stock) return false;
+    if(selCats.length&&!selCats.includes(p.cat)) return false;
+    if(selMarcas.length&&!selMarcas.includes(p.marca)) return false;
+    if(p.precio>0&&(p.precio<pMin||p.precio>pMax)) return false;
+    if(filEsp&&String(p.esp)!==filEsp) return false;
+    if(filAnch&&String(p.anch)!==filAnch) return false;
+    if(filLarg&&String(p.larg)!==filLarg) return false;
+    if(filTerm&&String(p.terminal)!==filTerm) return false;
+    if(q&&!(p.cod+' '+p.desc+' '+p.marca+' '+p.cat).toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  renderGrid(visibles);
+  document.getElementById('results-info').textContent=visibles.length+' producto'+(visibles.length!==1?'s':'');
+  document.getElementById('no-results').style.display=visibles.length?'none':'block';
+  document.getElementById('grid').style.display=visibles.length?'grid':'none';
+}
+
+function renderGrid(lista){
+  document.getElementById('grid').innerHTML=lista.map(p=>{
+    const svg=p.linea==='RMH'?SVG_RMH:SVG_MC;
+    const enCart=cart.find(c=>c.cod===p.cod);
+    const btnTxt=p.stock?(enCart?'Agregar mas':'Agregar'):'Sin stock';
+    const marcaTxt=(p.marca&&!['RMH','Moncar','Electrodomesticos'].includes(p.marca))?p.marca:'';
+    return `<div class="card">
+      <div class="card-icon">${svg}</div>
+      <div class="card-body">
+        <div class="card-badges"><span class="badge bl">${p.linea}</span><span class="badge bc">${p.cat}</span></div>
+        <div class="card-cod">${p.cod}</div>
+        <div class="card-desc">${p.desc}</div>
+        ${marcaTxt?`<div class="card-sub">${marcaTxt}</div>`:''}
+        ${p.dims?`<div class="card-sub">${p.dims} mm</div>`:''}
+        <div class="card-precio">${fmt(p.precio)}</div>
+        <span class="card-stock ${p.stock?'sok':'sno'}">${p.stock?'En stock':'Sin stock'}</span>
+        <button class="btn-add" ${p.stock?'':'disabled'} onclick="agregarAlCarrito('${p.cod}')">${btnTxt}</button>
+      </div></div>`;
+  }).join('');
+}
+
+function limpiarBusqueda(){ document.getElementById('search').value=''; filtrar(); }
+function limpiarPrecio(){ document.getElementById('precio-min').value=''; document.getElementById('precio-max').value=''; filtrar(); }
+function uncheckCat(v){ const cb=document.querySelector(`#sb-cats input[value="${v}"]`); if(cb)cb.checked=false; filtrar(); }
+function uncheckMarca(v){ const cb=document.querySelector(`#sb-marcas input[value="${v}"]`); if(cb)cb.checked=false; filtrar(); }
+function limpiarFiltros(){
+  document.querySelectorAll('#sb-cats input,#sb-marcas input').forEach(cb=>cb.checked=false);
+  document.getElementById('solo-stock').checked=false;
+  document.getElementById('precio-min').value='';
+  document.getElementById('precio-max').value='';
+  document.getElementById('fil-esp').value='';
+  document.getElementById('fil-anch').value='';
+  document.getElementById('fil-larg').value='';
+  document.getElementById('fil-term').value='';
+  document.getElementById('search').value='';
+  document.querySelector('.sb-linea-btn[data-val=""]').click();
+}
+
+function abrirSidebar(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sb-overlay').classList.add('open'); }
+function cerrarSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sb-overlay').classList.remove('open'); }
+
+// CART
+function agregarAlCarrito(cod){
+  const p=PRODUCTOS.find(x=>x.cod===cod); if(!p||!p.stock) return;
+  const ex=cart.find(c=>c.cod===cod);
+  if(ex) ex.qty++; else cart.push({cod:p.cod,desc:p.desc,precio:p.precio,qty:1});
+  guardarCart(); filtrar(); abrirCart();
+}
+function cambiarQty(cod,delta){
+  const ex=cart.find(c=>c.cod===cod); if(!ex) return;
+  ex.qty+=delta; if(ex.qty<=0) cart=cart.filter(c=>c.cod!==cod);
+  guardarCart();
+}
+function quitarItem(cod){ cart=cart.filter(c=>c.cod!==cod); guardarCart(); }
+function guardarCart(){
+  localStorage.setItem('moncar_cart',JSON.stringify(cart));
+  renderCart();
+  document.getElementById('cart-count').textContent=cart.reduce((s,c)=>s+c.qty,0);
+}
+function renderCart(){
+  const el=document.getElementById('cart-items');
+  if(!cart.length){ el.innerHTML='<div class="cart-empty">El carrito esta vacio</div>'; document.getElementById('cart-total').textContent='$0'; return; }
+  el.innerHTML=cart.map(c=>`<div class="ci">
+    <div class="ci-info">
+      <div class="ci-cod">${c.cod}</div>
+      <div class="ci-desc">${c.desc}</div>
+      <div class="ci-precio">${fmt(c.precio)}</div>
+      <div class="ci-qty">
+        <button onclick="cambiarQty('${c.cod}',-1);renderCart();filtrar()">-</button>
+        <span>${c.qty}</span>
+        <button onclick="cambiarQty('${c.cod}',1);renderCart();filtrar()">+</button>
+      </div>
+    </div>
+    <button class="btn-rm" onclick="quitarItem('${c.cod}');renderCart();filtrar()">✕</button>
+  </div>`).join('');
+  document.getElementById('cart-total').textContent=fmt(cart.reduce((s,c)=>s+c.precio*c.qty,0));
+}
+function abrirCart(){ document.getElementById('cart-panel').classList.add('open'); document.getElementById('overlay').style.display='block'; renderCart(); }
+function cerrarCart(){ document.getElementById('cart-panel').classList.remove('open'); document.getElementById('overlay').style.display='none'; }
+
+// PEDIDO — siempre al WhatsApp/email real de la empresa (CONTACTO_WA/CONTACTO_EMAIL).
+// (la version anterior intentaba rutear por zona a "hermanos" con datos ficticios
+// que no correspondian a nadie del equipo real; se saco esa logica)
+let _pedidoTipo='';
+function pedirPorWA(){ if(!cart.length) return; _pedidoTipo='wa'; abrirFormModal(); }
+function pedirPorEmail(){ if(!cart.length) return; _pedidoTipo='email'; abrirFormModal(); }
+
+function abrirFormModal(){
+  document.getElementById('fmodal-ov').classList.add('open');
+  ['f-nombre','f-localidad'].forEach(id=>document.getElementById(id).classList.remove('ferr'));
+}
+function cerrarFormModal(){
+  document.getElementById('fmodal-ov').classList.remove('open');
+}
+function confirmarPedido(){
+  const nombre=document.getElementById('f-nombre').value.trim();
+  const negocio=document.getElementById('f-negocio').value.trim();
+  const localidad=document.getElementById('f-localidad').value.trim();
+  let ok=true;
+  document.getElementById('f-nombre').classList.toggle('ferr',!nombre); if(!nombre) ok=false;
+  document.getElementById('f-localidad').classList.toggle('ferr',!localidad); if(!localidad) ok=false;
+  if(!ok) return;
+
+  let msg='Hola! Nuevo pedido desde la web:\n\n';
+  msg+='Cliente: '+nombre+'\n';
+  if(negocio) msg+='Negocio: '+negocio+'\n';
+  msg+='Localidad: '+localidad+'\n\n';
+  msg+='Productos:\n';
+  cart.forEach(c=>{msg+=`- ${c.cod} x${c.qty}\n`;});
+  msg+='\nMuchas gracias!';
+
+  cerrarFormModal();
+
+  if(_pedidoTipo==='wa'){
+    window.open('https://wa.me/'+CONTACTO_WA+'?text='+encodeURIComponent(msg),'_blank');
+  } else {
+    const subj='Nuevo pedido MONCAR RMH'+(negocio?' - '+negocio:'');
+    window.location.href='mailto:'+CONTACTO_EMAIL+'?subject='+encodeURIComponent(subj)+'&body='+encodeURIComponent(msg);
+  }
+}
+
+guardarCart(); filtrar();
+</script>
+</body>
+</html>
